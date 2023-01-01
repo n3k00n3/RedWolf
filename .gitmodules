@@ -1,30 +1,30 @@
 [submodule "RedWolf/Data/ReferenceSourceLibraries/Rubeus"]
 	path = RedWolf/Data/ReferenceSourceLibraries/Rubeus
-	url = https://github.com/GhostPack/Rubeus
+	url = git@github.com:GhostPack/Rubeus.git
 	ignore = dirty
 [submodule "RedWolf/Data/ReferenceSourceLibraries/SharpSploit"]
 	path = RedWolf/Data/ReferenceSourceLibraries/SharpSploit
-	url = https://github.com/cobbr/SharpSploit
+	url = git@github.com:cobbr/SharpSploit.git
 	ignore = dirty
 [submodule "RedWolf/Data/ReferenceSourceLibraries/SharpDPAPI"]
 	path = RedWolf/Data/ReferenceSourceLibraries/SharpDPAPI
-	url = https://github.com/GhostPack/SharpDPAPI
+	url = git@github.com:GhostPack/SharpDPAPI.git
 	ignore = dirty
 [submodule "RedWolf/Data/ReferenceSourceLibraries/SharpUp"]
 	path = RedWolf/Data/ReferenceSourceLibraries/SharpUp
-	url = https://github.com/GhostPack/SharpUp
+	url = git@github.com:GhostPack/SharpUp.git
 	ignore = dirty
 [submodule "RedWolf/Data/ReferenceSourceLibraries/Seatbelt"]
 	path = RedWolf/Data/ReferenceSourceLibraries/Seatbelt
-	url = https://github.com/GhostPack/Seatbelt
+	url = git@github.com:GhostPack/Seatbelt.git
 	ignore = dirty
 [submodule "RedWolf/Data/ReferenceSourceLibraries/SharpDump"]
 	path = RedWolf/Data/ReferenceSourceLibraries/SharpDump
-	url = https://github.com/GhostPack/SharpDump
+	url = git@github.com:GhostPack/SharpDump.git
 	ignore = dirty
 [submodule "RedWolf/Data/ReferenceSourceLibraries/SharpWMI"]
 	path = RedWolf/Data/ReferenceSourceLibraries/SharpWMI
-	url = https://github.com/GhostPack/SharpWMI
+	url = git@github.com:GhostPack/SharpWMI.git
 	ignore = dirty
 [submodule "Redwolf/data/referencesourcelibraries/certify"]
 	path = Redwolf/data/referencesourcelibraries/certify
@@ -32,5 +32,8 @@
 	ignore = dirty
 [submodule "RedWolf/Data/ReferenceSourceLibraries/SharpSC"]
 	path = RedWolf/Data/ReferenceSourceLibraries/SharpSC
-	url = https://github.com/djhohnstein/SharpSC
+	url = git@github.com:djhohnstein/SharpSC.git
 	ignore = dirty
+[submodule "RedWolf/Data/ReferenceSourceLibraries/Certify"]
+	path = RedWolf/Data/ReferenceSourceLibraries/Certify
+	url = git@github.com:GhostPack/Certify.git
