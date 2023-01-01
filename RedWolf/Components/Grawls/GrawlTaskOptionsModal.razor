@@ -1,0 +1,135 @@
+﻿@inherits OwningComponentBase<IRedWolfService>
+
+@using System.IO
+@using System.Threading
+@using System.Threading.Tasks 
+@using Microsoft.JSInterop
+@using BlazorInputFile
+@using RedWolf.Core
+@using RedWolf.Models.Grawls
+@inject IJSRuntime IJSRuntime
+
+<div class="modal fade" id="file-modal" tabindex="-1" role="dialog" aria-labelledby="file-modal-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="file-modal-label">Select File</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @if (this.GrawlTask != null)
+                {
+                    @for (int i = 0; i < this.GrawlTask.Options.Count; i++)
+                    {
+                        int number = i;
+                        @if (this.GrawlTask.Options[number].FileOption)
+                        {
+                            <div class="form-group">
+                                <label for="@GrawlTask.Options[number].Name">@GrawlTask.Options[number].Name</label><br />
+                                <InputFile @ref="InputFile" id="@GrawlTask.Options[number].Name" OnChange="OnUpload" />
+                                @if (this.UploadInProgress)
+                                {
+                                    <span class="fe fe-loader spin"></span>
+                                }
+                                @if (string.IsNullOrEmpty(this.ErrorMessage))
+                                {
+                                    <span class="text-danger">@ErrorMessage</span>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group">
+                                <label for="@GrawlTask.Options[number].Name">@GrawlTask.Options[number].Name</label>
+                                <input id="@GrawlTask.Options[number].Name" name="@GrawlTask.Options[number].Name" @bind="GrawlTask.Options[number].Value" class="form-control">
+                            </div>
+                        }
+                    }
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" @onclick="Execute" class="btn btn-primary">Execute</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<GrawlTask> OnSubmit { get; set; }
+
+    private GrawlTask GrawlTask { get; set; }
+    private InputFile InputFile { get; set; }
+    private IList<MemoryStream> UploadedFiles { get; set; }
+    private SemaphoreSlim UploadSemaphore { get; set; } = new SemaphoreSlim(1, 1);
+    private bool UploadInProgress { get; set; } = false;
+
+    public async Task Show(GrawlTask task)
+    {
+        this.GrawlTask = task;
+        this.StateHasChanged();
+        await IJSRuntime.InvokeAsync<string>("ActivateModal", "#file-modal");
+    }
+
+    private async Task Execute()
+    {
+        await UploadSemaphore.WaitAsync();
+        if (this.UploadedFiles != null && this.GrawlTask.Options.Any(O => O.FileOption && string.IsNullOrEmpty(O.Value)))
+        {
+            this.OnRead(this.UploadedFiles);
+        }
+        UploadSemaphore.Release();
+        await IJSRuntime.InvokeAsync<string>("ModalCommand", "#file-modal", "hide");
+        await OnSubmit.InvokeAsync(GrawlTask);
+    }
+
+    private string ErrorMessage { get; set; }
+    private async Task OnUpload(IFileListEntry[] files)
+    {
+        try
+        {
+            await UploadSemaphore.WaitAsync();
+            this.UploadInProgress = true;
+            this.StateHasChanged();
+            this.UploadedFiles = new List<MemoryStream>();
+            for (int i = 0; i < files.Length; i++)
+            {
+                if (files[i] != null)
+                {
+                    MemoryStream ms = new MemoryStream();
+                    await files[i].Data.CopyToAsync(ms);
+                    this.UploadedFiles.Add(ms);
+                    this.OnRead(this.UploadedFiles);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            this.ErrorMessage = e.Message;
+        }
+        this.UploadInProgress = false;
+        this.StateHasChanged();
+        UploadSemaphore.Release();
+    }
+
+    private void OnRead(IList<MemoryStream> Streams)
+    {
+        try
+        {
+            for (int i = 0; i < Streams.Count(); i++)
+            {
+                GrawlTaskOption option = this.GrawlTask.Options.Where(O => O.FileOption).ToList()[i];
+                option.Value = Convert.ToBase64String(Streams[i].ToArray());
+                this.UploadedFiles[i] = new MemoryStream(Convert.FromBase64String(option.Value));
+            }
+        }
+        catch (Exception e)
+        {
+            this.ErrorMessage = e.Message;
+            this.StateHasChanged();
+        }
+    }
+}

@@ -1,0 +1,23 @@
+﻿@page "/grawltasking"
+@page "/grawltasking/index"
+@attribute [Authorize(Roles = "User, Administrator")]
+@inherits OwningComponentBase<IRedWolfService>
+
+@using RedWolf.Core
+@using RedWolf.Models.Grawls
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3">
+    <h1 class="h2">GrawlTaskings</h1>
+</div>
+
+<GrawlTaskingTable GrawlTaskings="GrawlTaskings" IsPaginated="true" PageLength="10" IsSearchable="true" IsSortable="true" />
+
+@code {
+    [Parameter]
+    public List<GrawlTasking> GrawlTaskings { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.GrawlTaskings = this.GrawlTaskings ?? (await Service.GetGrawlTaskings()).ToList();
+    }
+}

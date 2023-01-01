@@ -1,0 +1,37 @@
+﻿@page "/covenantuser/create"
+@attribute [Authorize(Roles = "Administrator")]
+@inherits OwningComponentBase<IRedWolfService>
+
+@using Microsoft.AspNetCore.Components.Authorization
+@using RedWolf.Core
+@using RedWolf.Models.RedWolf
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3">
+    <h1 class="h2">Create User</h1>
+</div>
+
+<RedWolfUserRegisterForm RedWolfUserRegister="RedWolfUserRegister" OnSubmit="OnCreateUser">
+    <span class="fe fe-plus"></span> Create
+</RedWolfUserRegisterForm>
+
+@code {
+    [Parameter]
+    public RedWolfUserRegister RedWolfUserRegister { get; set; } = new RedWolfUserRegister();
+
+    public async Task OnCreateUser(RedWolfUserRegister register)
+    {
+        try
+        {
+            AuthenticationState state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            await Service.CreateUserVerify(state.User, register);
+            NavigationManager.NavigateTo("/covenantuser");
+        }
+        catch (Exception e) when (e is ControllerNotFoundException || e is ControllerBadRequestException || e is ControllerUnauthorizedException)
+        {
+            // ModelState.AddModelError(string.Empty, e.Message);
+            // return RedirectToAction(nameof(Index));
+        }
+    }
+}

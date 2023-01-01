@@ -1,0 +1,38 @@
+﻿@page "/grawltask/create"
+@attribute [Authorize(Roles = "Administrator")]
+@inherits OwningComponentBase<IRedWolfService>
+
+@using Microsoft.JSInterop
+@using RedWolf.Core
+@using RedWolf.Models.Grawls
+@inject IJSRuntime IJSRuntime
+@inject NavigationManager NavigationManager
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap pb-2 mb-3">
+    <h1 class="h2">Create GrawlTask</h1>
+</div>
+
+<GrawlTaskForm GrawlTask="GrawlTask" OnSubmit="OnCreate" SubmitIcon="plus" SubmitLabel="Create" />
+
+@code {
+    [Parameter]
+    public GrawlTask GrawlTask { get; set; }
+
+    protected override void OnInitialized()
+    {
+        this.GrawlTask = this.GrawlTask ?? new GrawlTask();
+    }
+
+    private async Task OnCreate(GrawlTask task)
+    {
+        try
+        {
+            await Service.CreateGrawlTask(task);
+            NavigationManager.NavigateTo("/grawltask");
+        }
+        catch (Exception e) when (e is ControllerNotFoundException || e is ControllerBadRequestException || e is ControllerUnauthorizedException)
+        {
+            // return RedirectToAction(nameof(Edit), new { Id = taskModel.Id });
+        }
+    }
+}

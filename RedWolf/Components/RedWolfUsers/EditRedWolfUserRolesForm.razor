@@ -1,0 +1,104 @@
+﻿@inherits OwningComponentBase<IRedWolfService>
+
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using RedWolf.Core
+@using RedWolf.Models.RedWolf
+@inject IJSRuntime IJSRuntime
+
+<EditForm Model="RedWolfUser" OnSubmit="OnSubmit">
+    <div class="form-group">
+        <label for="Roles">Edit Roles</label><br />
+        <select name="Roles" id="Roles" class="selectpicker show-menu-arrow" multiple data-dropup-auto="false" data-width="auto" data-live-search="true" data-selected-text-format="count > 2">
+            @foreach (var role in Roles)
+            {
+                @if (UserInRole(RedWolfUser, role.Id))
+                {
+                    <option selected value="@role.Id">@role.Name</option>
+                }
+                else
+                {
+                    <option value="@role.Id">@role.Name</option>
+                }
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">
+        <span class="fe fe-edit"></span> Edit Roles
+    </button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public RedWolfUser RedWolfUser { get; set; }
+
+    [Parameter]
+    public EventCallback<IEnumerable<IdentityRole>> OnChangeRoles { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; }
+    private IEnumerable<IdentityRole> Roles { get; set; }
+    private IdentityRole AdministratorRole { get; set; }
+
+    private RedWolfUser CurrentUser { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        AdministratorRole = await Service.GetRoleByName("Administrator");
+        CurrentUser = await Service.GetCurrentUser((await AuthenticationState).User);
+        var roles = await Service.GetRoles();
+        Roles = FilterRoles(roles);
+
+        /*
+         * Roles = await Service.GetRoles();
+         */
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await IJSRuntime.InvokeAsync<string>("InitializeSelectPicker", "#Roles.selectpicker");
+    }
+
+    private bool UserInRole(RedWolfUser user, string role)
+    {
+        try
+        {
+            Service.GetUserRole(user.Id, role).WaitTask();
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    public IEnumerable<IdentityRole> FilterRoles(IEnumerable<IdentityRole> roles)
+    {
+        if (!UserInRole(RedWolfUser, AdministratorRole.Id))
+        {
+            if (UserInRole(CurrentUser, AdministratorRole.Id)) {
+                return roles;
+            }
+            return roles.Where(role => role.Id != AdministratorRole.Id);
+        }
+        return roles;
+    }
+
+    private async Task<IEnumerable<IdentityRole>> GetSelectedRoles()
+    {
+        string[] ids = await IJSRuntime.InvokeAsync<string[]>("GetValue", new object[] { "#Roles" });
+        /*
+         * return ids.Select(id => Service.GetRole(id).WaitResult()).ToList();
+         */
+         var filteredRoles = FilterRoles(ids.Select(id => Service.GetRole(id).WaitResult()));
+         return filteredRoles;
+
+    }
+
+    private async Task OnSubmit()
+    {
+        await OnChangeRoles.InvokeAsync(await GetSelectedRoles());
+    }
+}

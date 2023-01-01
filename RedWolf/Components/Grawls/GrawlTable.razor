@@ -1,0 +1,133 @@
+﻿@inherits OwningComponentBase<IRedWolfService>
+
+@using System.Collections.Generic
+@using Microsoft.JSInterop
+
+@using RedWolf.Core
+@using RedWolf.Models.Grawls
+@using RedWolf.Components.Shared
+@inject IJSRuntime IJSRuntime
+@inject INotificationService INotificationService
+
+<RedWolfTable TItem="Grawl" Items="Grawls" ItemsChanged="GrawlsChanged" SearchRow="IsRowDisplayed"
+               IsSearchable="IsSearchable" IsSortable="IsSortable" IsPaginated="IsPaginated" PageLength="PageLength" class="table table-hover">
+    <TableHeader>
+        @if (this.OnSelectTerminal.HasDelegate)
+        {
+            <th class="pl-1 pr-1">
+                <div class="secondary-color">
+                    <span class="fe fe-terminal"></span>
+                </div>
+            </th>
+        }
+        <SortableTableHeader TItem="Grawl" TItem2="string" GetSortableProperty="(grawl) => grawl.Name">
+            <HeaderContent>Name</HeaderContent>
+        </SortableTableHeader>
+        <SortableTableHeader TItem="Grawl" TItem2="string" GetSortableProperty="(grawl) => grawl.Hostname">
+            <HeaderContent>Hostname</HeaderContent>
+        </SortableTableHeader>
+        <SortableTableHeader TItem="Grawl" TItem2="string" GetSortableProperty="(grawl) => grawl.UserName">
+            <HeaderContent>User</HeaderContent>
+        </SortableTableHeader>
+        <SortableTableHeader TItem="Grawl" TItem2="IntegrityLevel" GetSortableProperty="(grawl) => grawl.Integrity">
+            <HeaderContent>Integrity</HeaderContent>
+        </SortableTableHeader>
+        <SortableTableHeader TItem="Grawl" TItem2="DateTime" GetSortableProperty="(grawl) => grawl.LastCheckIn">
+            <HeaderContent>LastCheckIn</HeaderContent>
+        </SortableTableHeader>
+        <SortableTableHeader TItem="Grawl" TItem2="GrawlStatus" GetSortableProperty="(grawl) => grawl.Status">
+            <HeaderContent>Status</HeaderContent>
+        </SortableTableHeader>
+        <SortableTableHeader TItem="Grawl" TItem2="string" GetSortableProperty="(grawl) => grawl.Note">
+            <HeaderContent>Note</HeaderContent>
+        </SortableTableHeader>
+        <SortableTableHeader TItem="Grawl" TItem2="string" GetSortableProperty="(grawl) => grawl.ImplantTemplate?.Name">
+            <HeaderContent>Template</HeaderContent>
+        </SortableTableHeader>
+    </TableHeader>
+    <TableRow Context="grawl">
+        <tr style="opacity: @GetGrawlStatusOpacity(grawl.Status)">
+            @if (this.OnSelectTerminal.HasDelegate)
+            {
+                <td @attributes="InputAttributes">
+                    <div class="secondary-color secondary-highlight-hover secondary-shadow" @onclick="e => OnSelectTerminal.InvokeAsync(grawl)">
+                        <span class="fe fe-terminal"></span>
+                    </div>
+                </td>
+            }
+            <td @attributes="InputAttributes">
+                <a href="/grawl/interact/@grawl.Id">
+                    @grawl.Name
+                </a>
+            </td>
+            <td @attributes="InputAttributes">@grawl.Hostname</td>
+            <td @attributes="InputAttributes">@grawl.UserName</td>
+            <td @attributes="InputAttributes">@grawl.Integrity</td>
+            <td @attributes="InputAttributes">@grawl.LastCheckIn</td>
+            <td @attributes="InputAttributes">@grawl.Status</td>
+            <td @attributes="InputAttributes">@grawl.Note</td>
+            <td @attributes="InputAttributes">@grawl.ImplantTemplate?.Name</td>
+        </tr>
+    </TableRow>
+    <ButtonTray>@ButtonTray</ButtonTray>
+</RedWolfTable>
+
+@code {
+    [Parameter]
+    public List<Grawl> Grawls { get; set; }
+
+    [Parameter]
+    public EventCallback<List<Grawl>> GrawlsChanged { get; set; }
+
+    [Parameter]
+    public bool IsSearchable { get; set; } = false;
+
+    [Parameter]
+    public bool IsSortable { get; set; } = true;
+
+    [Parameter]
+    public bool IsPaginated { get; set; } = true;
+
+    [Parameter]
+    public int PageLength { get; set; } = 50;
+
+    [Parameter]
+    public EventCallback<Grawl> OnSelectTerminal { get; set; }
+
+    [Parameter]
+    public RenderFragment ButtonTray { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> InputAttributes { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        this.Grawls = this.Grawls ?? (await Service.GetGrawls()).ToList();
+        Service.DisposeContext();
+    }
+
+    private string GetGrawlStatusOpacity(GrawlStatus s)
+    {
+        return s == GrawlStatus.Active ? "1.0" : "0.3";
+    }
+
+    private void OnGrawlsChanged(List<Grawl> Grawls)
+    {
+        this.Grawls = Grawls;
+        this.GrawlsChanged.InvokeAsync(Grawls);
+    }
+
+    private bool IsRowDisplayed(Grawl grawl, string SearchTerm)
+    {
+        return SearchTerm == string.Empty ||
+            grawl.Name.Contains(SearchTerm, StringComparison.CurrentCultureIgnoreCase) ||
+            (grawl.ImplantTemplate != null && grawl.ImplantTemplate.Name.Contains(SearchTerm, StringComparison.CurrentCultureIgnoreCase)) ||
+            grawl.Hostname.Contains(SearchTerm, StringComparison.CurrentCultureIgnoreCase) ||
+            grawl.UserName.Contains(SearchTerm, StringComparison.CurrentCultureIgnoreCase) ||
+            grawl.Status.ToString().Contains(SearchTerm, StringComparison.CurrentCultureIgnoreCase) ||
+            grawl.LastCheckIn.ToString().Contains(SearchTerm, StringComparison.CurrentCultureIgnoreCase) ||
+            grawl.Integrity.ToString().Contains(SearchTerm, StringComparison.CurrentCultureIgnoreCase) ||
+            grawl.OperatingSystem.Contains(SearchTerm, StringComparison.CurrentCultureIgnoreCase) ||
+            grawl.Process.Contains(SearchTerm, StringComparison.CurrentCultureIgnoreCase);
+    }
+}

@@ -1,0 +1,51 @@
+﻿@page "/grawltask/edit/{GrawlTaskId:int}"
+@attribute [Authorize(Roles = "Administrator")]
+@inherits OwningComponentBase<IRedWolfService>
+
+@using Microsoft.JSInterop
+@using RedWolf.Core
+@using RedWolf.Models.Grawls
+@inject IJSRuntime IJSRuntime
+@inject NavigationManager NavigationManager
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap pb-2 mb-3">
+    <h1 class="h2">GrawlTask: <span class="primary-color">@GrawlTask.Name</span></h1>
+</div>
+
+<GrawlTaskForm GrawlTask="GrawlTask" OnSubmit="OnEdit" SubmitIcon="edit" SubmitLabel="Edit">
+    <button type="button" @onclick="OnExport" class="btn btn-secondary">
+        <span class="fe fe-share"></span>
+        Export
+    </button>
+</GrawlTaskForm>
+
+@code {
+    [Parameter]
+    public int GrawlTaskId { get; set; }
+
+    [Parameter]
+    public GrawlTask GrawlTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.GrawlTask = this.GrawlTask ?? await Service.GetGrawlTask(this.GrawlTaskId);
+    }
+
+    private async Task OnEdit(GrawlTask task)
+    {
+        try
+        {
+            await Service.EditGrawlTask(task);
+            NavigationManager.NavigateTo("/grawltask");
+        }
+        catch (Exception e) when (e is ControllerNotFoundException || e is ControllerBadRequestException || e is ControllerUnauthorizedException)
+        {
+            // return RedirectToAction(nameof(Edit), new { Id = taskModel.Id });
+        }
+    }
+
+    private async Task OnExport()
+    {
+        await IJSRuntime.InvokeAsync<string>("DownloadFile", this.GrawlTask.Name + ".yaml", "application/x-yaml", Convert.ToBase64String(Common.RedWolfEncoding.GetBytes(this.GrawlTask.ToYaml())));
+    }
+}

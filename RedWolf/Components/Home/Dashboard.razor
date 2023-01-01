@@ -1,0 +1,118 @@
+﻿@page "/"
+@page "/home"
+@page "/home/index"
+@attribute [Authorize(Roles = "User, Administrator")]
+@inherits OwningComponentBase<IRedWolfService>
+@implements IDisposable
+
+@using RedWolf.Core
+@using RedWolf.Models.Grawls
+@using RedWolf.Models.Listeners
+@using RedWolf.Components.Listeners
+@using RedWolf.Components.Grawls
+@using RedWolf.Components.GrawlTaskings
+@inject INotificationService INotificationService
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3">
+    <h1 class="h2">Dashboard</h1>
+</div>
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
+    <h4 class="h5">Grawls</h4>
+</div>
+<GrawlTable @bind-Grawls="Grawls" IsPaginated="true" PageLength="10" IsSearchable="false" />
+<br />
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
+    <h4 class="h5">Listeners</h4>
+</div>
+<ListenerTable @bind-Listeners="Listeners" IsPaginated="true" PageLength="5" IsSearchable="false" />
+<br />
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
+    <h4 class="h5">Taskings</h4>
+</div>
+<GrawlTaskingTable @bind-GrawlTaskings="GrawlTaskings" IsPaginated="true" PageLength="10" IsSearchable="false" />
+<br />
+
+@code {
+    [Parameter]
+    public List<Grawl> Grawls { get; set; }
+
+    [Parameter]
+    public List<Listener> Listeners { get; set; }
+
+    [Parameter]
+    public List<GrawlTasking> GrawlTaskings { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.Grawls = this.Grawls ?? (await Service.GetGrawls())
+            .Where(G => G.Status != GrawlStatus.Hidden && G.Status != GrawlStatus.Uninitialized)
+            .OrderByDescending(G => G.LastCheckIn)
+            .ToList();
+        this.Listeners = this.Listeners ?? (await Service.GetListeners()).ToList();
+        this.GrawlTaskings = this.GrawlTaskings ?? (await Service.GetGrawlTaskings()).ToList();
+        this.INotificationService.OnCreateGrawl += OnCreateGrawl;
+        this.INotificationService.OnEditGrawl += OnEditGrawl;
+        this.INotificationService.OnCreateListener += OnCreateListener;
+        this.INotificationService.OnEditListener += OnEditListener;
+        this.INotificationService.OnCreateGrawlTasking += OnCreateGrawlTasking;
+        this.INotificationService.OnEditGrawlTasking += OnEditGrawlTasking;
+    }
+
+    public void Dispose()
+    {
+        this.INotificationService.OnCreateGrawl -= OnCreateGrawl;
+        this.INotificationService.OnEditGrawl -= OnEditGrawl;
+        this.INotificationService.OnCreateListener -= OnCreateListener;
+        this.INotificationService.OnEditListener -= OnEditListener;
+        this.INotificationService.OnCreateGrawlTasking -= OnCreateGrawlTasking;
+        this.INotificationService.OnEditGrawlTasking -= OnEditGrawlTasking;
+    }
+
+    private void OnCreateGrawl(object sender, Grawl grawl)
+    {
+        this.Grawls.Add(grawl);
+        this.InvokeAsync(() => this.StateHasChanged());
+    }
+
+    private void OnEditGrawl(object sender, Grawl grawl)
+    {
+        if (this.Grawls.Any(G => G.Id == grawl.Id))
+        {
+            this.Grawls[this.Grawls.FindIndex(G => G.Id == grawl.Id)] = grawl;
+            this.InvokeAsync(() => this.StateHasChanged());
+        }
+    }
+
+    private void OnCreateListener(object sender, Listener listener)
+    {
+        this.Listeners.Add(listener);
+        this.InvokeAsync(() => this.StateHasChanged());
+    }
+
+    private void OnEditListener(object sender, Listener listener)
+    {
+        if (this.Listeners.Any(L => L.Id == listener.Id))
+        {
+            this.Listeners[this.Listeners.FindIndex(L => L.Id == listener.Id)] = listener;
+            this.InvokeAsync(() => this.StateHasChanged());
+        }
+    }
+
+    private void OnCreateGrawlTasking(object sender, GrawlTasking tasking)
+    {
+        this.GrawlTaskings.Add(tasking);
+        this.InvokeAsync(() => this.StateHasChanged());
+    }
+
+    private void OnEditGrawlTasking(object sender, GrawlTasking tasking)
+    {
+        if (this.GrawlTaskings.Any(T => T.Id == tasking.Id))
+        {
+            this.GrawlTaskings[this.GrawlTaskings.FindIndex(T => T.Id == tasking.Id)] = tasking;
+            this.InvokeAsync(() => this.StateHasChanged());
+        }
+    }
+}

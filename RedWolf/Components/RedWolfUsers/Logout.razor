@@ -1,0 +1,12 @@
+﻿@using RedWolf.Models.RedWolf
+@using Microsoft.AspNetCore.Identity
+@inject NavigationManager NavigationManager
+@inject SignInManager<RedWolfUser> SignInManager
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await SignInManager.SignOutAsync();
+        NavigationManager.NavigateTo("/covenantuser/login");
+    }
+}

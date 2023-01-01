@@ -1,0 +1,115 @@
+﻿@inherits OwningComponentBase<IRedWolfService>
+
+@using Microsoft.JSInterop
+@using RedWolf.Core
+@using RedWolf.Models.Grawls
+@inject IJSRuntime IJSRuntime
+
+<form>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="Name">Name</label>
+            <input id="Name" name="Name" @bind="GrawlTasking.Name" class="form-control" readonly>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="Grawl.Name">Grawl</label>
+            <a id="Grawl.Name" name="Grawl.Name" href="/grawl/interact/@GrawlTasking.Grawl.Id" class="btn btn-secondary text-left w-100">
+                @GrawlTasking.Grawl.Name
+            </a>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="GrawlTask.Name">Task</label>
+            <a id="GrawlTask.Name" name="GrawlTask.Name" href="/grawltask/edit/@GrawlTasking.GrawlTask.Id" class="btn btn-secondary text-left w-100">
+                @GrawlTasking.GrawlTask.Name
+            </a>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="Status">Status</label><br />
+            <select id="Status" name="Status" @bind="GrawlTasking.Status" class="selectpicker show-menu-arrow" data-dropup-auto="false" data-width="auto" disabled>
+                @foreach (var n in Enum.GetNames(typeof(GrawlTaskingStatus)))
+                {
+                    if (Enum.TryParse<GrawlTaskingStatus>(n, out GrawlTaskingStatus status) && this.GrawlTasking.Status == status)
+                    {
+                        <option selected value="@(((Enum)typeof(GrawlTaskingStatus).GetField(n).GetValue(null)).ToString("d"))">@n</option>
+                    }
+                    else
+                    {
+                        <option value="@(((Enum)typeof(GrawlTaskingStatus).GetField(n).GetValue(null)).ToString("d"))">@n</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="GrawlCommand.CommandTime">CommandTime</label>
+            <input id="GrawlCommand.CommandTime" name="GrawlCommand.CommandTime" @bind="GrawlTasking.GrawlCommand.CommandTime" class="form-control" readonly>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="Type">Type</label><br />
+            <select id="Type" name="Type" @bind="GrawlTasking.Type" class="selectpicker show-menu-arrow" data-dropup-auto="false" data-width="auto" disabled>
+                @foreach (var n in Enum.GetNames(typeof(GrawlTaskingType)))
+                {
+                    if (Enum.TryParse<GrawlTaskingType>(n, out GrawlTaskingType type) && this.GrawlTasking.Type == type)
+                    {
+                        <option selected value="@(((Enum)typeof(GrawlTaskingType).GetField(n).GetValue(null)).ToString("d"))">@n</option>
+                    }
+                    else
+                    {
+                        <option value="@(((Enum)typeof(GrawlTaskingType).GetField(n).GetValue(null)).ToString("d"))">@n</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="GrawlCommand.User.UserName">UserName</label>
+            <input id="GrawlCommand.User.UserName" name="GrawlCommand.User.UserName" @bind="GrawlTasking.GrawlCommand.User.UserName" class="form-control" readonly>
+        </div>
+        <div class="form-group col-md-8">
+            <label for="GrawlCommand.Command">Command</label>
+            <textarea id="GrawlCommand.Command" name="GrawlCommand.Command" @bind="GrawlTasking.GrawlCommand.Command" rows="1" class="form-control" readonly></textarea>
+        </div>
+    </div>
+    @for (int i = 0; i < Math.Min(GrawlTasking.Parameters.Count, GrawlTasking.GrawlTask.Options.Count); i++)
+    {
+        <div class="form-group">
+            <label for="Parameters[@i]">@GrawlTasking.GrawlTask.Options[i].Name</label>
+            <input id="Parameters[@i]" name="Parameters[@i]" @bind="GrawlTasking.Parameters[i]" class="form-control" readonly>
+        </div>
+    }
+    <div class="form-group">
+        <label for="GrawlCommand.CommandOutput.Output">Output</label>
+        @if (this.GrawlTasking.GrawlTask.Name == "ScreenShot")
+        {
+            <img style="max-width:100%" src="data:image/png;base64, @GrawlTasking.GrawlCommand.CommandOutput.Output" />
+        }
+        else
+        {
+            <textarea asp-for="GrawlCommand.CommandOutput.Output" @bind="GrawlTasking.GrawlCommand.CommandOutput.Output" rows="20" class="form-control" readonly></textarea>
+        }
+    </div>
+</form>
+
+@code {
+    [Parameter]
+    public GrawlTasking GrawlTasking { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.GrawlTasking.Grawl = this.GrawlTasking.Grawl ?? await Service.GetGrawl(this.GrawlTasking.GrawlId);
+        this.GrawlTasking.GrawlTask = this.GrawlTasking.GrawlTask ?? await Service.GetGrawlTask(this.GrawlTasking.GrawlTaskId);
+        this.GrawlTasking.GrawlCommand = this.GrawlTasking.GrawlCommand ?? await Service.GetGrawlCommand(this.GrawlTasking.GrawlCommandId);
+        this.GrawlTasking.GrawlCommand.CommandOutput = this.GrawlTasking.GrawlCommand.CommandOutput ?? await Service.GetCommandOutput(this.GrawlTasking.GrawlCommand.CommandOutputId);
+        this.GrawlTasking.GrawlCommand.User = this.GrawlTasking.GrawlCommand.User ?? await Service.GetUser(this.GrawlTasking.GrawlCommand.UserId);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await IJSRuntime.InvokeAsync<string>("InitializeSelectPicker", "#Type.selectpicker");
+        await IJSRuntime.InvokeAsync<string>("InitializeSelectPicker", "#Status.selectpicker");
+        await IJSRuntime.InvokeAsync<string>("InitializeSelectPicker", "#Type.selectpicker", ((int)Enum.Parse(typeof(GrawlTaskingType), this.GrawlTasking.Type.ToString())).ToString());
+        await IJSRuntime.InvokeAsync<string>("InitializeSelectPicker", "#Status.selectpicker", ((int)Enum.Parse(typeof(GrawlTaskingStatus), this.GrawlTasking.Status.ToString())).ToString());
+    }
+}

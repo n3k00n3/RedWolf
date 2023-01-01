@@ -1,0 +1,103 @@
+﻿@using System.Collections.Generic
+@using Microsoft.JSInterop
+@using RedWolf.Models.Grawls
+@using RedWolf.Components.Shared
+@inject IJSRuntime IJSRuntime
+
+<RedWolfTable TItem="GrawlTasking" Items="GrawlTaskings" SearchRow="IsRowDisplayed"
+               IsSearchable="IsSearchable" IsSortable="IsSortable" IsPaginated="IsPaginated" PageLength="PageLength" class="table table-hover">
+    <TableHeader>
+        <SortableTableHeader TItem="GrawlTasking" TItem2="string" GetSortableProperty="(tasking) => tasking.Name">
+            <HeaderContent>Name</HeaderContent>
+        </SortableTableHeader>
+        <SortableTableHeader TItem="GrawlTasking" TItem2="string" GetSortableProperty="(tasking) => tasking.Grawl.Name">
+            <HeaderContent>Grawl</HeaderContent>
+        </SortableTableHeader>
+        <SortableTableHeader TItem="GrawlTasking" TItem2="string" GetSortableProperty="(tasking) => tasking.GrawlTask.Name">
+            <HeaderContent>Task</HeaderContent>
+        </SortableTableHeader>
+        <SortableTableHeader TItem="GrawlTasking" TItem2="GrawlTaskingStatus" GetSortableProperty="(tasking) => tasking.Status">
+            <HeaderContent>Status</HeaderContent>
+        </SortableTableHeader>
+        <SortableTableHeader TItem="GrawlTasking" TItem2="string" GetSortableProperty="(tasking) => tasking.GrawlCommand.User.UserName">
+            <HeaderContent>UserName</HeaderContent>
+        </SortableTableHeader>
+        <SortableTableHeader TItem="GrawlTasking" TItem2="DateTime" GetSortableProperty="(tasking) => tasking.GrawlCommand.CommandTime">
+            <HeaderContent>CommandTime</HeaderContent>
+        </SortableTableHeader>
+        <SortableTableHeader TItem="GrawlTasking" TItem2="DateTime" GetSortableProperty="(tasking) => tasking.CompletionTime">
+            <HeaderContent>CompletionTime</HeaderContent>
+        </SortableTableHeader>
+	<SortableTableHeader TItem="GrawlTasking" TItem2="string" GetSortableProperty="(tasking) => tasking.GrawlCommand.Command">
+            <HeaderContent>Command</HeaderContent>
+        </SortableTableHeader>
+    </TableHeader>
+    <TableRow Context="tasking">
+        <tr>
+            <td>
+                <a href="/grawltasking/edit/@tasking.Id">
+                    @tasking.Name
+                </a>
+            </td>
+            <td>
+                <a href="/grawl/interact/@tasking.GrawlId">
+                    @tasking.Grawl.Name
+                </a>
+            </td>
+            <td>
+                <a href="/grawltask/edit/@tasking.GrawlTaskId">
+                    @tasking.GrawlTask.Name
+                </a>
+            </td>
+            <td>@tasking.Status</td>
+            <td>
+                <a href="/covenantuser/edit/@tasking.GrawlCommand.User.Id">
+                    @tasking.GrawlCommand.User.UserName
+                </a>
+            </td>
+            <td>@tasking.GrawlCommand.CommandTime</td>
+            <td>@tasking.CompletionTime</td>
+            <td>@tasking.GrawlCommand.Command</td>
+        </tr>
+    </TableRow>
+</RedWolfTable>
+
+@code {
+    [Parameter]
+    public List<GrawlTasking> GrawlTaskings { get; set; }
+
+    [Parameter]
+    public EventCallback<List<GrawlTasking>> GrawlTaskingsChanged { get; set; }
+
+    [Parameter]
+    public bool IsSearchable { get; set; } = true;
+
+    [Parameter]
+    public bool IsSortable { get; set; } = true;
+
+    [Parameter]
+    public bool IsPaginated { get; set; } = true;
+
+    [Parameter]
+    public int PageLength { get; set; } = 50;
+
+    private void OnGrawlTaskingsChanged(List<GrawlTasking> GrawlTaskings)
+    {
+        this.GrawlTaskings = GrawlTaskings;
+        this.GrawlTaskingsChanged.InvokeAsync(GrawlTaskings);
+    }
+
+    private bool IsRowDisplayed(GrawlTasking tasking, string SearchTerm)
+    {
+        return SearchTerm == string.Empty ||
+            tasking.Name.Contains(SearchTerm, StringComparison.CurrentCultureIgnoreCase) ||
+            tasking.Grawl.Name.Contains(SearchTerm, StringComparison.CurrentCultureIgnoreCase) ||
+            tasking.GrawlTask.Name.Contains(SearchTerm, StringComparison.CurrentCultureIgnoreCase) ||
+            tasking.Status.ToString().Contains(SearchTerm, StringComparison.CurrentCultureIgnoreCase) ||
+            tasking.GrawlCommand.User.UserName.Contains(SearchTerm, StringComparison.CurrentCultureIgnoreCase) ||
+            tasking.GrawlCommand.Command.Contains(SearchTerm, StringComparison.CurrentCultureIgnoreCase) ||
+            tasking.GrawlCommand.CommandTime.ToString().Contains(SearchTerm, StringComparison.CurrentCultureIgnoreCase) ||
+            tasking.CompletionTime.ToString().Contains(SearchTerm, StringComparison.CurrentCultureIgnoreCase) ||
+            (tasking.GrawlCommand.CommandOutput != null && tasking.GrawlCommand.CommandOutput.Output.Contains(SearchTerm, StringComparison.CurrentCultureIgnoreCase));
+    }
+}

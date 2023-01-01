@@ -1,0 +1,130 @@
+﻿@page "/grawl"
+@page "/grawl/index"
+@attribute [Authorize(Roles = "User, Administrator")]
+@inherits OwningComponentBase<IRedWolfService>
+@implements IDisposable
+
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Components.Authorization
+
+@using RedWolf.Core
+@using RedWolf.Models.Grawls
+@using RedWolf.Models.RedWolf
+@inject IJSRuntime IJSRuntime
+@inject INotificationService INotificationService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3">
+    <h1 class="h2">Grawls</h1>
+</div>
+
+<GrawlTable @bind-Grawls="Grawls" class="p-2" OnSelectTerminal="OnSelectTerminal">
+    <ButtonTray>
+        @if (this.SomeHidden && this.Hidden)
+        {
+            <button type="button" class="btn btn-info" @onclick="OnToggleHide">
+                <span class="fe fe-eye"></span>
+            </button>
+        }
+        else if (this.SomeHidden)
+        {
+            <button type="button" class="btn btn-info" @onclick="OnToggleHide">
+                <span class="fe fe-eye-off"></span>
+            </button>
+        }
+    </ButtonTray>
+</GrawlTable>
+
+<TabbedTerminals @ref="TabbedTerminals" @bind-TerminalGrawls="TerminalGrawls" OnRemoveTerminal="OnRemoveTerminal"/>
+
+@code {
+    [Parameter]
+    public List<Grawl> Grawls { get; set; }
+    private List<Grawl> UnfilteredGrawls { get; set; }
+
+    private TabbedTerminals TabbedTerminals { get; set; }
+    private List<Grawl> TerminalGrawls { get; set; } = new List<Grawl>();
+
+    private bool SomeHidden { get; set; } = false;
+    private bool Hidden { get; set; } = true;
+    private bool UserIsAdmin { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.UnfilteredGrawls = this.Grawls ?? (await Service.GetGrawls())
+            .OrderByDescending(G => G.LastCheckIn)
+            .ToList();
+        this.FilterGrawls();
+        Service.DisposeContext();
+        this.INotificationService.OnCreateGrawl += OnCreateGrawl;
+        this.INotificationService.OnEditGrawl += OnEditGrawl;
+    }
+
+    private void FilterGrawls()
+    {
+        this.SomeHidden = this.UnfilteredGrawls.Any(G => G.Status == GrawlStatus.Hidden);
+        this.Grawls = this.UnfilteredGrawls
+            .Where(G => (!this.Hidden || G.Status != GrawlStatus.Hidden) && G.Status != GrawlStatus.Uninitialized)
+            .ToList();
+    }
+
+    public void Dispose()
+    {
+        this.INotificationService.OnCreateGrawl -= OnCreateGrawl;
+        this.INotificationService.OnEditGrawl -= OnEditGrawl;
+    }
+
+    private void OnCreateGrawl(object sender, Grawl grawl)
+    {
+        this.UnfilteredGrawls.Add(grawl);
+        if ((!this.Hidden || grawl.Status != GrawlStatus.Hidden) && grawl.Status != GrawlStatus.Uninitialized)
+        {
+            this.FilterGrawls();
+            this.InvokeAsync(() => this.StateHasChanged());
+        }
+    }
+
+    private async void OnEditGrawl(object sender, Grawl grawl)
+    {
+
+
+        if (grawl.ImplantTemplate == null)
+        {
+            grawl.ImplantTemplate = await Service.GetImplantTemplate(grawl.ImplantTemplateId);
+            Service.DisposeContext();
+        }
+        bool inDisplayedGrawls = this.Grawls.Any(G => G.Id == grawl.Id);
+        if (inDisplayedGrawls)
+        {
+            this.Grawls[this.Grawls.FindIndex(G => G.Id == grawl.Id)] = grawl;
+            await this.InvokeAsync(() => this.StateHasChanged());
+        }
+        if (this.UnfilteredGrawls.Any(G => G.Id == grawl.Id))
+        {
+            this.UnfilteredGrawls[this.UnfilteredGrawls.FindIndex(G => G.Id == grawl.Id)] = grawl;
+            if (!inDisplayedGrawls && (!this.Hidden || grawl.Status != GrawlStatus.Hidden) && grawl.Status != GrawlStatus.Uninitialized)
+            {
+                this.FilterGrawls();
+                await this.InvokeAsync(() => this.StateHasChanged());
+            }
+        }
+    }
+
+    public void OnSelectTerminal(Grawl grawl)
+    {
+        this.TabbedTerminals.OnSelectTerminal(grawl);
+    }
+
+    public void OnRemoveTerminal(int number)
+    {
+        this.TerminalGrawls.RemoveAt(number);
+    }
+
+    private void OnToggleHide()
+    {
+        this.Hidden = !this.Hidden;
+        this.FilterGrawls();
+        this.StateHasChanged();
+    }
+
+}

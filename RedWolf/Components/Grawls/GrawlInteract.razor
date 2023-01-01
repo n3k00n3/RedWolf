@@ -1,0 +1,233 @@
+﻿@page "/grawl/interact/{GrawlId:int}"
+@attribute [Authorize(Roles = "User, Administrator")]
+@inherits OwningComponentBase<IRedWolfService>
+@implements IDisposable
+
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Components.Authorization
+
+@using RedWolf.Core
+@using RedWolf.Models.Grawls
+@using RedWolf.Models.RedWolf
+@using RedWolf.Components.GrawlTaskings
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+@inject UserManager<RedWolfUser> UserManager
+@inject IJSRuntime IJSRuntime
+@inject INotificationService INotificationService
+
+@if (this.Grawl == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap pb-2 mb-3">
+        <h1 class="h2">Grawl: <span id="grawl-name" class="primary-color">@Grawl.Name</span></h1>
+    </div>
+
+    @if (!string.IsNullOrEmpty(this.Grawl.Note))
+    {
+        <p><b>Note</b>: @Grawl.Note</p>
+    }
+
+    <ul class="nav nav-tabs mb-3" id="grawl-tab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false">
+                <span class="fe fe-info"></span>
+                Info
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="interact-tab" data-toggle="tab" href="#interact" role="tab" aria-controls="interact" aria-selected="false">
+                <span class="fe fe-terminal"></span>
+                Interact
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="task-tab" data-toggle="tab" href="#task" role="tab" aria-controls="task" aria-selected="false">
+                <span class="fe fe-box"></span>
+                Task
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="taskings-tab" data-toggle="tab" href="#taskings" role="tab" aria-controls="taskings" aria-selected="false">
+                <span class="fe fe-layers"></span>
+                Taskings
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="grawl-tab-content">
+        <div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
+            <GrawlForm Grawl="Grawl" OnSubmit="OnEdit" />
+        </div>
+        <div class="tab-pane fade" id="interact" role="tabpanel" aria-labelledby="interact-tab">
+            <GrawlInteractTerminal Grawl="Grawl" OnInteract="OnInteract" />
+        </div>
+        <div class="tab-pane fade" id="task" role="tabpanel" aria-labelledby="task-tab">
+            <GrawlTaskAssignForm GrawlId="GrawlId" OnSubmit="OnTask" />
+        </div>
+        <div class="tab-pane fade mb-5" id="taskings" role="tabpanel" aria-labelledby="taskings-tab">
+            <GrawlTaskingTable GrawlTaskings="GrawlTaskings" PageLength="50" />
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int GrawlId { get; set; }
+
+    [Parameter]
+    public Grawl Grawl { get; set; }
+
+    private RedWolfUser RedWolfUser { get; set; }
+    private List<GrawlTasking> GrawlTaskings { get; set; }
+
+    private RedWolfUser CurrentUser { get; set; }
+    private IdentityRole AdministratorRole { get; set; }
+
+    private bool UserIsAdmin { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.Grawl = this.Grawl ?? await Service.GetGrawl(this.GrawlId);
+        AuthenticationState state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        this.RedWolfUser = await UserManager.GetUserAsync(state.User);
+        this.GrawlTaskings = (await Service.GetGrawlTaskingsForGrawl(this.GrawlId)).ToList();
+        Service.DisposeContext();
+        this.INotificationService.OnEditGrawl += OnEditGrawl;
+        this.INotificationService.OnCreateGrawlTasking += OnCreateGrawlTasking;
+        this.INotificationService.OnEditGrawlTasking += OnEditGrawlTasking;
+
+        AdministratorRole = await Service.GetRoleByName("Administrator");
+    }
+
+    public void Dispose()
+    {
+        this.INotificationService.OnEditGrawl -= OnEditGrawl;
+        this.INotificationService.OnCreateGrawlTasking -= OnCreateGrawlTasking;
+        this.INotificationService.OnEditGrawlTasking -= OnEditGrawlTasking;
+    }
+
+    bool scrollToBottom = false;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await IJSRuntime.InvokeAsync<string>("ShowTab", "#info-tab");
+        }
+        if (scrollToBottom)
+        {
+            await IJSRuntime.InvokeAsync<string>("ScrollToBottom", "#interact-scroll");
+        }
+    }
+
+    private void OnEditGrawl(object sender, Grawl grawl)
+    {
+
+        if (this.GrawlId == grawl.Id)
+        {
+            this.Grawl = grawl;
+        }
+    }
+
+    private void OnCreateGrawlTasking(object sender, GrawlTasking grawlTasking)
+    {
+        if (this.GrawlId == grawlTasking.GrawlId)
+        {
+            this.GrawlTaskings.Add(grawlTasking);
+            // scrollToBottom = true;
+        }
+    }
+
+    private void OnEditGrawlTasking(object sender, GrawlTasking grawlTasking)
+    {
+        if (this.GrawlId == grawlTasking.GrawlId)
+        {
+            int index = this.GrawlTaskings.FindIndex(GT => GT.Id == grawlTasking.Id);
+            if (index != -1)
+            {
+                this.GrawlTaskings[index] = grawlTasking;
+                // scrollToBottom = true;
+                _ = this.InvokeAsync(() => this.StateHasChanged());
+            }
+        }
+    }
+
+    private async Task OnEdit(Grawl grawl)
+    {
+        try
+        {
+            AuthenticationState state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            CurrentUser = await Service.GetCurrentUser (state.User);
+            UserIsAdmin = UserInRole(CurrentUser, AdministratorRole.Id);
+            if (!UserIsAdmin) {
+                return;
+            }
+            await Service.EditGrawl(grawl, await Service.GetCurrentUser(state.User));
+            Service.DisposeContext();
+        }
+        catch (Exception e) when (e is ControllerNotFoundException || e is ControllerBadRequestException || e is ControllerUnauthorizedException)
+        {
+            // return RedirectToAction(nameof(Interact), new { id = grawl.Id });
+        }
+    }
+
+    private async Task OnInteract(Tuple<Grawl, string> tuple)
+    {
+        GrawlCommand command = await Service.InteractGrawl(this.Grawl.Id, this.RedWolfUser.Id, tuple.Item2);
+        Service.DisposeContext();
+        this.StateHasChanged();
+    }
+
+    private async Task OnTask(GrawlTask task)
+    {
+        try
+        {
+            AuthenticationState state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+            task = await Service.EditGrawlTask(task);
+            Service.DisposeContext();
+            RedWolfUser currentUser = await Service.GetCurrentUser(state.User);
+            GrawlCommand command = await Service.CreateGrawlCommand(new GrawlCommand
+            {
+                Command = task.GetVerboseCommand(),
+                CommandTime = DateTime.UtcNow,
+                UserId = currentUser.Id,
+                GrawlId = this.Grawl.Id,
+                CommandOutputId = 0,
+                CommandOutput = new CommandOutput()
+            });
+            Service.DisposeContext();
+            GrawlTasking created = await Service.CreateGrawlTasking(new GrawlTasking
+            {
+                GrawlTaskId = task.Id,
+                GrawlId = this.Grawl.Id,
+                Type = task.TaskingType,
+                Status = GrawlTaskingStatus.Uninitialized,
+                GrawlCommandId = command.Id
+            });
+            Service.DisposeContext();
+            await IJSRuntime.InvokeAsync<string>("ShowTab", "#interact-tab");
+        }
+        catch (Exception e) when (e is ControllerNotFoundException || e is ControllerBadRequestException || e is ControllerUnauthorizedException)
+        {
+            // return RedirectToAction(nameof(Index));
+        }
+    }
+    private bool UserInRole(RedWolfUser user, string role)
+    {
+        try
+        {
+            Service.GetUserRole(user.Id, role).WaitTask();
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+}

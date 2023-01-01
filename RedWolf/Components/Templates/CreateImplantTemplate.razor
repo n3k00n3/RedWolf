@@ -1,0 +1,58 @@
+﻿@page "/template/create"
+@attribute [Authorize(Roles = "User, Administrator")]
+@inherits OwningComponentBase<IRedWolfService>
+
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Components.Authorization
+
+@using RedWolf.Core
+@using RedWolf.Models.Grawls
+@using RedWolf.Models.RedWolf
+@inject IJSRuntime IJSRuntime
+@inject NavigationManager NavigationManager
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap pb-2 mb-3">
+    <h1 class="h2">Create Implant Template</h1>
+</div>
+
+<ImplantTemplateForm ImplantTemplate="ImplantTemplate" OnSubmit="OnCreate" SubmitIcon="plus" SubmitLabel="Create" />
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; }
+
+    private RedWolfUser CurrentUser { get; set; }
+    private IdentityRole AdministratorRole { get; set; }
+
+    public ImplantTemplate ImplantTemplate { get; set; } = new ImplantTemplate();
+
+    private async Task OnCreate(ImplantTemplate template)
+    {
+        AdministratorRole = await Service.GetRoleByName("Adminsitrator");
+        CurrentUser = await Service.GetCurrentUser((await AuthenticationState).User);
+        if (!UserInRole(CurrentUser, AdministratorRole.Id)) { return; }
+        try
+        {
+            await Service.CreateImplantTemplate(template);
+            NavigationManager.NavigateTo("/template");
+        }
+        catch (Exception e) when (e is ControllerNotFoundException || e is ControllerBadRequestException || e is ControllerUnauthorizedException)
+        {
+            // return RedirectToAction(nameof(Index));
+        }
+    }
+    private bool UserInRole(RedWolfUser user, string role)
+    {
+        try
+        {
+            Service.GetUserRole(user.Id, role).WaitTask();
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+}

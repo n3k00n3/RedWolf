@@ -1,0 +1,149 @@
+﻿@inherits OwningComponentBase<IRedWolfService>
+
+@using Microsoft.JSInterop
+@using RedWolf.Core
+@using RedWolf.Models.Grawls
+@using RedWolf.Models.Listeners
+@inject IJSRuntime IJSRuntime
+
+<div class="d-flex flex-wrap">
+    <div class="graph-box border m-1 p-1"></div>
+    <div class="flex-grow-1 border-left border-right border-bottom m-1 p-0">
+        <div class="border-top m-0 p-0">
+            <div class="m-2">
+                <h3 class="h3">Legend</h3>
+            </div>
+            <ul style="list-style-type: none;">
+                <li><img src="/images/legend-red.png" alt="Red" height="20" width="20" /> Listener</li>
+                <li><img src="/images/legend-blue.png" alt="Blue" height="20" width="20" /> Grawl (http)</li>
+                <li><img src="/images/legend-green.png" alt="Green" height="20" width="20" /> Grawl (smb)</li>
+            </ul>
+        </div>
+        <div class="border-top mb-1 pb-2 mt-1">
+            <div class="m-2">
+                <h3 class="h3">Node Information</h3>
+            </div>
+            <ul class="nav nav-tabs mb-3" id="graph-tab" role="tablist" hidden>
+                <li class="nav-link" id="start-tab-label" data-toggle="tab" href="#start-tab" role="tab" aria-controls="start-tab" aria-selected="true">
+                    Start Tab
+                </li>
+                @foreach (Grawl g in this.Grawls)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" id="@g.ANOTHERID-tab" data-toggle="tab" href="#node-@g.ANOTHERID" role="tab" aria-controls="@g.ANOTHERID" aria-selected="false">
+                            @g.Name
+                        </a>
+                    </li>
+                }
+                @foreach (Listener l in this.Listeners)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" id="@l.ANOTHERID-tab" data-toggle="tab" href="#node-@l.ANOTHERID" role="tab" aria-controls="@l.ANOTHERID" aria-selected="false">
+                            @l.Name
+                        </a>
+                    </li>
+                }
+            </ul>
+            <div class="tab-content p-2" id="graph-tab-content">
+                <div class="tab-pane fade" id="start-tab" role="tabpanel" aria-labelledby="start-tab-label">
+                    <p class="text-muted">Click on a node to reveal more information.</p>
+                </div>
+                @foreach (Grawl g in Grawls)
+                {
+                    <div class="tab-pane fade" id="node-@g.ANOTHERID" role="tabpanel" aria-labelledby="@g.ANOTHERID-tab">
+                        <h5 class="h5">Grawl</h5>
+                        <div class="form-group">
+                            <label for="Name">Name</label>
+                            <a id="Name" name="Name" href="/grawl/interact/@g.Id" class="btn btn-secondary text-left w-100">@g.Name</a>
+                        </div>
+                        <div class="form-group">
+                            <label for="Note">Note</label>
+                            <input id="Note" name="Note" @bind="@g.Note" class="form-control" readonly disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="ImplantTemplate.CommType">CommType</label>
+                            <input id="ImplantTemplate.CommType" name="ImplantTemplate.CommType" @bind="g.ImplantTemplate.CommType" class="form-control" readonly disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="Children">Children</label><br />
+                            <select id="Children" name="Children" readonly disabled class="selectpicker show-menu-arrow" multiple data-dropup-auto="false" data-selected-text-format="count > 4">
+                                @foreach (string c in g.Children)
+                                {
+                                    <option selected value="@c">@c</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                }
+                @foreach (Listener l in Listeners)
+                {
+                    <div class="tab-pane fade" id="node-@l.ANOTHERID" role="tabpanel" aria-labelledby="@l.ANOTHERID-tab">
+                        <h5 class="h5">Listener</h5>
+                        <div class="form-group">
+                            <label for="Listener.Name">Name</label>
+                            <a href="/listener/edit/@l.Id" class="btn btn-secondary text-left w-100">@l.Name</a>
+                        </div>
+                        <div class="form-group">
+                            <label for="Description">Description</label>
+                            <input id="Description" name="Description" @bind="@l.Description" class="form-control" readonly disabled>
+                        </div>
+                        @if (l.ListenerType.Name == "HTTP")
+                        {
+                            <div class="form-group">
+                                <label for="Urls">Urls</label>
+                                @{ string urls = string.Join(",", ((HttpListener)l).Urls); }
+                                <input id="Urls" name="Urls" value="@urls" class="form-control" readonly disabled>
+                            </div>
+                         }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public IEnumerable<Listener> Listeners { get; set; }
+
+    private IEnumerable<Grawl> Grawls { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.Grawls = await Service.GetGrawls();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await IJSRuntime.InvokeAsync<string>("ShowTab", "start-tab");
+            await IJSRuntime.InvokeAsync<string>("InitializeGraph", ".graph-box");
+            foreach (Grawl grawl in this.Grawls.Where(G => G.Status != GrawlStatus.Uninitialized))
+            {
+                await IJSRuntime.InvokeAsync<string>("GraphDisplayGrawl", grawl.ANOTHERID, grawl.Name);
+            }
+            foreach (Listener listener in this.Listeners.Where(L => L.Status == ListenerStatus.Active))
+            {
+                await IJSRuntime.InvokeAsync<string>("GraphDisplayListener", listener.ANOTHERID, listener.Name);
+            }
+            foreach (Grawl grawl in this.Grawls.Where(G => G.Status != GrawlStatus.Uninitialized))
+            {
+                foreach (string child in grawl.Children)
+                {
+                    Grawl childGrawl = await Service.GetGrawlByANOTHERID(child);
+                    await IJSRuntime.InvokeAsync<string>("GraphDisplayGrawlLink", grawl.ANOTHERID, childGrawl.ANOTHERID);
+                }
+            }
+            List<Grawl> grawls = this.Grawls
+                    .Where(G => G.Status != GrawlStatus.Uninitialized)
+                    .Where(G => !this.Grawls.Any(AG => AG.Children.Contains(G.ANOTHERID)))
+                    .ToList();
+            foreach (Grawl grawl in grawls)
+            {
+                Listener listener = await Service.GetListener(grawl.ListenerId);
+                await IJSRuntime.InvokeAsync<string>("GraphDisplayGrawlListenerLink", listener.ANOTHERID, grawl.ANOTHERID);
+            }
+        }
+    }
+}

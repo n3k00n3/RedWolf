@@ -1,0 +1,96 @@
+@page "/home/reset"
+@attribute [Authorize(Roles = "Administrator")]
+@inherits OwningComponentBase<IRedWolfService>
+@implements IDisposable
+
+@using Microsoft.AspNetCore.Components.Authorization
+@using RedWolf.Core
+@using RedWolf.Models.Grawls
+@using RedWolf.Models.Listeners
+@using RedWolf.Components.Listeners
+@using RedWolf.Components.Grawls
+@using RedWolf.Components.GrawlTaskings
+@using RedWolf.Models.RedWolf
+@using RedWolf.Models.Indicators
+@using Microsoft.AspNetCore.Identity
+@using System.Threading
+@using System.Collections.Concurrent
+@inject ConcurrentDictionary<int, CancellationTokenSource> ListenerCancellationTokens
+@inject RoleManager<IdentityRole> RoleManager
+@inject RedWolfContext RedWolfContext
+@inject INotificationService INotificationService
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<RedWolfUser> UserManager
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3">
+    <h1 class="h2">Reset RedWolf</h1>
+</div>
+
+<h4><font color="red">Caution !!!</font></h4>
+<div>
+    By clicking the button below, you will reset RedWolf to a new configuration.
+    You will delete:
+    <ul>
+        <li>All grawls</li>
+        <li>All taskings</li>
+        <li>All indicators</li>
+    </ul>
+</div>
+<button type="button" class="btn btn-primary" @onclick="ResetAll">Reset RedWolf</button>
+
+@code {
+    
+    [Parameter]
+    public List<RedWolfUser> RedWolfUsers { get; set; }
+
+    [Parameter]
+    public List<Grawl> Grawls { get; set; }
+
+    [Parameter]
+    public List<Listener> Listeners { get; set; }
+
+    [Parameter]
+    public List<GrawlTasking> GrawlTaskings { get; set; }
+
+    [Parameter]
+    public List<ImplantTemplate> ImplantTemplates { get; set; }
+
+    [Parameter]
+    public List<Indicator> Indicators { get; set; }
+
+    [Parameter]
+    public List<Profile> Profiles { get; set; }
+        
+    protected override async Task OnInitializedAsync()
+    {
+        this.Grawls = this.Grawls ?? (await Service.GetGrawls()).ToList();
+        this.Listeners = this.Listeners ?? (await Service.GetListeners()).ToList();
+        this.GrawlTaskings = this.GrawlTaskings ?? (await Service.GetGrawlTaskings()).ToList();
+        this.RedWolfUsers = this.RedWolfUsers ?? (await Service.GetUsers()).ToList();
+        this.ImplantTemplates = this.ImplantTemplates ?? (await Service.GetImplantTemplates()).ToList();
+        this.Indicators = this.Indicators ?? (await Service.GetIndicators()).ToList();
+        this.Profiles = this.Profiles ?? (await Service.GetProfiles()).ToList();
+    }
+
+    private RedWolfUser GetUser()
+    {
+        Task<AuthenticationState> t1 = AuthenticationStateProvider.GetAuthenticationStateAsync();
+        t1.Wait();
+        Task<RedWolfUser> t2 = UserManager.GetUserAsync(t1.Result.User);
+        t2.Wait();
+        return t2.Result;
+    }
+
+    private async Task ResetAll() {
+
+
+        foreach (GrawlTasking tasking in this.GrawlTaskings)
+        {
+            Console.WriteLine("Deleting tasking: " + tasking.Name);
+            await Service.DeleteGrawlTasking(tasking.Id);
+        }
+        
+        NavigationManager.NavigateTo("/");
+    }
+}

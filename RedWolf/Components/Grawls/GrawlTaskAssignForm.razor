@@ -1,0 +1,170 @@
+﻿@inherits OwningComponentBase<IRedWolfService>
+
+@using System.IO
+@using System.Threading
+@using System.Threading.Tasks
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using BlazorInputFile
+@using RedWolf.Core
+@using RedWolf.Models.Grawls
+@using RedWolf.Models.RedWolf
+
+@if (GrawlTasks == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <EditForm Model="GrawlTask" OnValidSubmit="(e => this.OnTask())">
+        <DataAnnotationsValidator />
+        <div class="form-group col-md-4">
+            <label for="GrawlTaskId">GrawlTask</label>
+            <select id="GrawlTaskId" name="GrawlTaskId" @onchange="(e => OnChangeGrawlTask(e))" class="form-control">
+                @foreach (GrawlTask task in this.GrawlTasks)
+                {
+                    @if (this.GrawlTask.Id == task.Id)
+                    {
+                        <option selected value="@task.Id">@task.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@task.Id">@task.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div>
+            @for (int i = 0; i < this.GrawlTask.Options.Count; i++)
+            {
+                int number = i;
+                @if (this.GrawlTask.Options[i].FileOption)
+                {
+                    <div class="form-group col-md-12">
+                        <label for="@GrawlTask.Options[number].Name">@GrawlTask.Options[number].Name</label><br />
+                        <InputFile @ref="InputFile" id="@GrawlTask.Options[number].Name" OnChange="OnUpload" />
+                        @if (this.UploadInProgress)
+                        {
+                            <span class="fe fe-loader spin"></span>
+                        }
+                        @if (string.IsNullOrEmpty(this.ErrorMessage))
+                        {
+                            <span class="text-danger">@ErrorMessage</span>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group col-md-12">
+                        <label for="@GrawlTask.Options[number].Name">@GrawlTask.Options[number].Name</label>
+                        <input id="@GrawlTask.Options[number].Name" name="@GrawlTask.Options[number].Name" @bind="GrawlTask.Options[number].Value" class="form-control">
+                        <div class="text-danger"><ValidationMessage For="() => GrawlTask.Options[number].Value" /></div>
+                    </div>
+                }
+            }
+        </div>
+        <div class="form-group col-md-4">
+            <button type="submit" class="btn btn-primary">
+                <span class="fe fe-play"></span>
+                Task
+            </button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int GrawlId { get; set; }
+
+    [Parameter]
+    public EventCallback<GrawlTask> OnSubmit { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; }
+
+    private RedWolfUser CurrentUser { get; set; }
+    private IdentityRole AdministratorRole { get; set; }
+
+    public InputFile InputFile { get; set; }
+    private SemaphoreSlim UploadSemaphore { get; set; } = new SemaphoreSlim(1, 1);
+    private bool UploadInProgress { get; set; } = false;
+
+    private IList<GrawlTask> GrawlTasks { get; set; }
+    private GrawlTask GrawlTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        AdministratorRole = await Service.GetRoleByName("Administrator");
+        CurrentUser = await Service.GetCurrentUser((await AuthenticationState).User);
+
+        this.GrawlTasks = (await Service.GetGrawlTasksForGrawl(this.GrawlId)).OrderBy(GT => GT.Name).ToList();
+        Service.DisposeContext();
+        this.GrawlTask = this.GrawlTasks.First();
+    }
+
+    private async Task OnTask()
+    {
+
+        await UploadSemaphore.WaitAsync();
+        //CurrentUser = await Service.GetCurrentUser((await AuthenticationState).User);
+        if (UserInRole(CurrentUser, AdministratorRole.Id)) {
+           await this.OnSubmit.InvokeAsync(GrawlTask);
+        }
+        //await UploadSemaphore.WaitAsync();
+        UploadSemaphore.Release();
+    }
+
+    private void OnChangeGrawlTask(ChangeEventArgs e)
+    {
+        if (int.TryParse((string)e.Value, out int GrawlTaskId))
+        {
+            this.GrawlTask = this.GrawlTasks.FirstOrDefault(GT => GT.Id == GrawlTaskId);
+            this.StateHasChanged();
+        }
+    }
+
+    private string ErrorMessage { get; set; }
+    private async Task OnUpload(IFileListEntry[] files)
+    {
+        try
+        {
+            await UploadSemaphore.WaitAsync();
+            this.UploadInProgress = true;
+            this.StateHasChanged();
+            for (int i = 0; i < files.Length; i++)
+            {
+                if (files[i] != null)
+                {
+                    MemoryStream ms = new MemoryStream();
+                    await files[i].Data.CopyToAsync(ms);
+
+                    GrawlTaskOption option = this.GrawlTask.Options.Where(O => O.FileOption).ToList()[i];
+                    option.Value = Convert.ToBase64String(ms.ToArray());
+
+                    files[i] = null;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            this.ErrorMessage = e.Message;
+        }
+        this.UploadInProgress = false;
+        this.StateHasChanged();
+        UploadSemaphore.Release();
+    }
+    private bool UserInRole(RedWolfUser user, string role)
+    {
+        try
+        {
+            Service.GetUserRole(user.Id, role).WaitTask();
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+}
