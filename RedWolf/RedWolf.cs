@@ -40,6 +40,7 @@ namespace RedWolf
         {
             CommandLineApplication app = new CommandLineApplication();
             app.HelpOption("-? | -h | --help");
+
             var UserNameOption = app.Option(
                 "-u | --username <USERNAME>",
                 "The initial user UserName to create on launch. (env: REDWOLF_USERNAME)",
