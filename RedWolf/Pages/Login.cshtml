@@ -1,4 +1,4 @@
-﻿@page "/covenantuser/login"
+﻿@page "/redwolfuser/login"
 @using Microsoft.AspNetCore.Identity
 @using RedWolf.Core
 @using RedWolf.Models.RedWolf
@@ -9,8 +9,8 @@
     Layout = "_LoginLayout";
 }
 
-<div class="covenant-logo">
-    <img class="mb-5" src="~/images/covenant-white.png" height="540" width="540">
+<div class="redwolf-logo">
+    <img class="mb-5" src="~/images/redwolf-white.png" height="540" width="540">
     @if (!UserManager.Users.ToList().Where(U => UserManager.IsInRoleAsync(U, "Administrator").WaitResult()).Any())
     {
         <form method="post" class="form-signin">

@@ -1,4 +1,4 @@
-﻿@page "/covenantuser/create"
+﻿@page "/redwolfuser/create"
 @attribute [Authorize(Roles = "Administrator")]
 @inherits OwningComponentBase<IRedWolfService>
 
@@ -26,7 +26,7 @@
         {
             AuthenticationState state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             await Service.CreateUserVerify(state.User, register);
-            NavigationManager.NavigateTo("/covenantuser");
+            NavigationManager.NavigateTo("/redwolfuser");
         }
         catch (Exception e) when (e is ControllerNotFoundException || e is ControllerBadRequestException || e is ControllerUnauthorizedException)
         {

@@ -24,7 +24,7 @@ namespace RedWolf.Core
         private HubConnection _connection;
         public RedWolfHubService(IConfiguration configuration)
         {
-            X509Certificate2 covenantCert = new X509Certificate2(Common.RedWolfPublicCertFile);
+            X509Certificate2 redwolfCert = new X509Certificate2(Common.RedWolfPublicCertFile);
             HttpClientHandler clientHandler = new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = (sender, cert, chain, errors) =>
@@ -33,7 +33,7 @@ namespace RedWolf.Core
                 }
             };
             _connection = new HubConnectionBuilder()
-                .WithUrl("https://localhost:" + configuration["RedWolfPort"] + "/covenantHub", options =>
+                .WithUrl("https://localhost:" + configuration["RedWolfPort"] + "/redwolfHub", options =>
                 {
                     options.AccessTokenProvider = () => { return Task.FromResult(configuration["ServiceUserToken"]); };
                     options.HttpMessageHandlerFactory = inner =>

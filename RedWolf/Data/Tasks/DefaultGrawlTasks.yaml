@@ -2,9 +2,9 @@
   Aliases: []
   Description: Show the help menu.
   Author: 
-      Name: EasyPeasy
+      Name: RedWolf
       Handle: 
-      Link: https://github.com/cobbr/EasyPeasy
+      Link: https://github.com/cobbr/RedWolf
   Help: 
   Language: CSharp
   CompatibleDotNetVersions:
@@ -31,9 +31,9 @@
   Aliases: []
   Description: Import a PowerShell script.
   Author: 
-      Name: EasyPeasy
+      Name: RedWolf
       Handle: 
-      Link: https://github.com/cobbr/EasyPeasy
+      Link: https://github.com/cobbr/RedWolf
   Help: 
   Language: CSharp
   CompatibleDotNetVersions:
@@ -59,9 +59,9 @@
   Aliases: []
   Description: Connect to a P2P Grawl.
   Author: 
-      Name: EasyPeasy
+      Name: RedWolf
       Handle: 
-      Link: https://github.com/cobbr/EasyPeasy
+      Link: https://github.com/cobbr/RedWolf
   Help: 
   Language: CSharp
   CompatibleDotNetVersions:
@@ -96,9 +96,9 @@
   Aliases: []
   Description: Exits the Grawl.
   Author: 
-      Name: EasyPeasy
+      Name: RedWolf
       Handle: 
-      Link: https://github.com/cobbr/EasyPeasy
+      Link: https://github.com/cobbr/RedWolf
   Help: 
   Language: CSharp
   CompatibleDotNetVersions:
@@ -117,9 +117,9 @@
   Aliases: []
   Description: Get active Tasks.
   Author: 
-      Name: EasyPeasy
+      Name: RedWolf
       Handle: 
-      Link: https://github.com/cobbr/EasyPeasy
+      Link: https://github.com/cobbr/RedWolf
   Help: 
   Language: CSharp
   CompatibleDotNetVersions:
@@ -138,9 +138,9 @@
   Aliases: []
   Description: Kill an active task.
   Author: 
-      Name: EasyPeasy
+      Name: RedWolf
       Handle: 
-      Link: https://github.com/cobbr/EasyPeasy
+      Link: https://github.com/cobbr/RedWolf
   Help: 
   Language: CSharp
   CompatibleDotNetVersions:
@@ -167,9 +167,9 @@
   Aliases: []
   Description: Set how long a Grawl should delay between callbacks.
   Author: 
-      Name: EasyPeasy
+      Name: RedWolf
       Handle: 
-      Link: https://github.com/cobbr/EasyPeasy
+      Link: https://github.com/cobbr/RedWolf
   Help: 
   Language: CSharp
   CompatibleDotNetVersions:
@@ -196,9 +196,9 @@
   Aliases: []
   Description: Set the percentage a Grawl should alter it's delay value between each callback.
   Author: 
-      Name: EasyPeasy
+      Name: RedWolf
       Handle: 
-      Link: https://github.com/cobbr/EasyPeasy
+      Link: https://github.com/cobbr/RedWolf
   Help: 
   Language: CSharp
   CompatibleDotNetVersions:
@@ -225,9 +225,9 @@
   Aliases: []
   Description: Set the maximum number of consecutive unsuccessful attempts a Grawl will make to communicate back to a Listener before giving up and exiting.
   Author: 
-      Name: EasyPeasy
+      Name: RedWolf
       Handle: 
-      Link: https://github.com/cobbr/EasyPeasy
+      Link: https://github.com/cobbr/RedWolf
   Help: 
   Language: CSharp
   CompatibleDotNetVersions:
@@ -254,9 +254,9 @@
   Aliases: []
   Description: Set the date at which a Grawl should exit.
   Author: 
-      Name: EasyPeasy
+      Name: RedWolf
       Handle: 
-      Link: https://github.com/cobbr/EasyPeasy
+      Link: https://github.com/cobbr/RedWolf
   Help: 
   Language: CSharp
   CompatibleDotNetVersions:
@@ -283,9 +283,9 @@
   Aliases: []
   Description: Disconnect from a ChildGrawl.
   Author: 
-      Name: EasyPeasy
+      Name: RedWolf
       Handle: 
-      Link: https://github.com/cobbr/EasyPeasy
+      Link: https://github.com/cobbr/RedWolf
   Help: 
   Language: CSharp
   CompatibleDotNetVersions:

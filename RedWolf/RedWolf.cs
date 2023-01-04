@@ -158,7 +158,7 @@ namespace RedWolf
                 loggingConfig.AddTarget("file", fileTarget);
                 consoleTarget.Layout = @"${longdate}|${event-properties:item=EventId_Id}|${uppercase:${level}}|${logger}|${message} ${exception:format=tostring}";
                 fileTarget.Layout = @"${longdate}|${event-properties:item=EventId_Id}|${uppercase:${level}}|${logger}|${message} ${exception:format=tostring}";
-                fileTarget.FileName = Common.RedWolfLogDirectory + "covenant.log";
+                fileTarget.FileName = Common.RedWolfLogDirectory + "redwolf.log";
                 loggingConfig.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Fatal, "console");
                 loggingConfig.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Fatal, "file");
 

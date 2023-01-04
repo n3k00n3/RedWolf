@@ -34,7 +34,7 @@
         try
         {
             await Service.EditTheme(theme);
-            NavigationManager.NavigateTo($"/covenantuser/index");
+            NavigationManager.NavigateTo($"/redwolfuser/index");
         }
         catch (Exception e) when (e is ControllerNotFoundException || e is ControllerBadRequestException || e is ControllerUnauthorizedException)
         {

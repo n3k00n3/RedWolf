@@ -18,7 +18,7 @@ namespace RedWolf.Pages
         public async Task<IActionResult> OnGetAsync()
         {
             await _signInManager.SignOutAsync();
-            return LocalRedirect("/covenantuser/login");
+            return LocalRedirect("/redwolfuser/login");
         }
     }
 }

@@ -235,7 +235,7 @@ namespace RedWolf
                 endpoints.MapControllers();
                 endpoints.MapHub<GrawlHub>("/grawlhub");
                 endpoints.MapHub<EventHub>("/eventhub");
-                endpoints.MapHub<RedWolfHub>("/covenanthub");
+                endpoints.MapHub<RedWolfHub>("/redwolfhub");
                 endpoints.MapFallbackToPage("/_Host");
             });
         }

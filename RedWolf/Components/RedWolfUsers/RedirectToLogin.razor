@@ -7,13 +7,13 @@
     {
         try
         {
-            NavigationManager.NavigateTo("/covenantuser/login");
+            NavigationManager.NavigateTo("/redwolfuser/login");
         }
         catch (NavigationException) { }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await IJSRuntime.InvokeAsync<string>("RedirectToUrl", "/covenantuser/login");
+        await IJSRuntime.InvokeAsync<string>("RedirectToUrl", "/redwolfuser/login");
     }
 }

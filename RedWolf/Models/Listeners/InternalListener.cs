@@ -101,12 +101,12 @@ namespace RedWolf.Models.Listeners
                 })
             };
 
-            X509Certificate2 covenantCert = new X509Certificate2(Common.RedWolfPublicCertFile);
+            X509Certificate2 redwolfCert = new X509Certificate2(Common.RedWolfPublicCertFile);
             HttpClientHandler clientHandler = new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = (sender, cert, chain, errors) =>
                 {
-                    return cert.GetCertHashString() == covenantCert.GetCertHashString();
+                    return cert.GetCertHashString() == redwolfCert.GetCertHashString();
                 }
             };
             _client = new RedWolfAPI(

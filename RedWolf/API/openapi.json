@@ -5543,7 +5543,7 @@
         "success": {
           "type": "boolean"
         },
-        "covenantToken": {
+        "redwolfToken": {
           "type": "string"
         }
       }
@@ -6037,10 +6037,10 @@
         "status": {
           "$ref": "#/definitions/ListenerStatus"
         },
-        "covenantUrl": {
+        "redwolfUrl": {
           "type": "string"
         },
-        "covenantToken": {
+        "redwolfToken": {
           "type": "string"
         },
         "startTime": {
@@ -7692,10 +7692,10 @@
         "status": {
           "$ref": "#/definitions/ListenerStatus"
         },
-        "covenantUrl": {
+        "redwolfUrl": {
           "type": "string"
         },
-        "covenantToken": {
+        "redwolfToken": {
           "type": "string"
         },
         "startTime": {
@@ -7785,10 +7785,10 @@
         "status": {
           "$ref": "#/definitions/ListenerStatus"
         },
-        "covenantUrl": {
+        "redwolfUrl": {
           "type": "string"
         },
-        "covenantToken": {
+        "redwolfToken": {
           "type": "string"
         },
         "startTime": {

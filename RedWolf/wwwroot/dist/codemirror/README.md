@@ -25,7 +25,7 @@ for contributing guidelines.
 
 The CodeMirror community aims to be welcoming to everybody. We use the
 [Contributor RedWolf
-(1.1)](http://contributor-covenant.org/version/1/1/0/) as our code of
+(1.1)](http://contributor-redwolf.org/version/1/1/0/) as our code of
 conduct.
 
 ### Installation

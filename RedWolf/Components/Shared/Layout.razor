@@ -25,19 +25,19 @@
             <CascadingValue Value="Theme">
                 <nav class="navbar navbar-expand navbar-dark sticky-top border-bottom border-dark">
                     <a class="navbar-brand ml-3 align-items-center" href="/">
-                        <img src="/images/covenant-white.png" alt="RedWolf" height="52" width="52">
+                        <img src="/images/redwolf-white.png" alt="RedWolf" height="52" width="52">
                     </a>
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item text-nowrap">
-                            <a class="nav-link" href="/covenantuser/edit/@User.Id">Welcome, @User.UserName!</a>
+                            <a class="nav-link" href="/redwolfuser/edit/@User.Id">Welcome, @User.UserName!</a>
                         </li>
                         <li class="nav-item text-nowrap">
-                            <a class="nav-link" href="/covenantuser/logout">Logout</a>
+                            <a class="nav-link" href="/redwolfuser/logout">Logout</a>
                         </li>
                     </ul>
                 </nav>
                 <EventNotifier />
-                <div id="covenant-container" class="container-fluid">
+                <div id="redwolf-container" class="container-fluid">
                     <div class="d-flex flex-row">
                         <nav class="col-sm-2 bg-light sidebar border-right border-dark">
                             <div class="sidebar-sticky">
@@ -97,7 +97,7 @@
                                         </NavLink>
                                     </li>
                                     <li class="nav-item">
-                                        <NavLink href="/covenantuser" id="nav-users" class="nav-link" Match="NavLinkMatch.Prefix">
+                                        <NavLink href="/redwolfuser" id="nav-users" class="nav-link" Match="NavLinkMatch.Prefix">
                                             <span class="fe fe-users"></span>
                                             Users
                                         </NavLink>

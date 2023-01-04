@@ -22,10 +22,10 @@ namespace RedWolf.API.Models
         /// <summary>
         /// Initializes a new instance of the RedWolfUserLoginResult class.
         /// </summary>
-        public RedWolfUserLoginResult(bool? success = default(bool?), string covenantToken = default(string))
+        public RedWolfUserLoginResult(bool? success = default(bool?), string redwolfToken = default(string))
         {
             Success = success;
-            RedWolfToken = covenantToken;
+            RedWolfToken = redwolfToken;
             CustomInit();
         }
 
@@ -41,7 +41,7 @@ namespace RedWolf.API.Models
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "covenantToken")]
+        [JsonProperty(PropertyName = "redwolfToken")]
         public string RedWolfToken { get; set; }
 
     }

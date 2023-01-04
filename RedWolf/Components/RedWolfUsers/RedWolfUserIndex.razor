@@ -1,5 +1,5 @@
-﻿@page "/covenantuser"
-@page "/covenantuser/index"
+﻿@page "/redwolfuser"
+@page "/redwolfuser/index"
 @attribute [Authorize(Roles = "User, Administrator")]
 @inherits OwningComponentBase<IRedWolfService>
 
@@ -36,7 +36,7 @@
         <RedWolfUserTable RedWolfUsers="RedWolfUsers" />
         @if (IsAdmin())
         {
-            <a href="/covenantuser/create" class="btn btn-primary">
+            <a href="/redwolfuser/create" class="btn btn-primary">
                 <span class="fe fe-plus"></span>
                 Create
             </a>
