@@ -57,7 +57,7 @@ main {
 }
 
 .sidebar .nav-link.active {
-    color: #007bff;
+    color: #dc3545;
 }
 
 .sidebar .nav-link:hover .fe,
