@@ -261,7 +261,7 @@ namespace RedWolf.Core
                         Location= "SharpSC" + Path.DirectorySeparatorChar,
                         CompatibleDotNetVersions = new List<Common.DotNetVersion> { Common.DotNetVersion.Net35, Common.DotNetVersion.Net40 }
                     }
-                };
+                  };
                 await service.CreateReferenceSourceLibraries(ReferenceSourceLibraries);
 
                 var ss = await service.GetReferenceSourceLibraryByName("SharpSploit");
@@ -273,6 +273,8 @@ namespace RedWolf.Core
                 var su = await service.GetReferenceSourceLibraryByName("SharpUp");
                 var sw = await service.GetReferenceSourceLibraryByName("SharpWMI");
                 var sc = await service.GetReferenceSourceLibraryByName("SharpSC");
+                var sbu = await service.GetReferenceSourceLibraryByName("SharpBypassUAC");
+
                 await service.CreateEntities(
     new ReferenceSourceLibraryReferenceAssembly { ReferenceSourceLibrary = ss, ReferenceAssembly = await service.GetReferenceAssemblyByName("mscorlib.dll", Common.DotNetVersion.Net35) },
     new ReferenceSourceLibraryReferenceAssembly { ReferenceSourceLibrary = ss, ReferenceAssembly = await service.GetReferenceAssemblyByName("mscorlib.dll", Common.DotNetVersion.Net40) },
@@ -393,6 +395,7 @@ namespace RedWolf.Core
     new ReferenceSourceLibraryReferenceAssembly { ReferenceSourceLibrary = sc, ReferenceAssembly = await service.GetReferenceAssemblyByName("System.Core.dll", Common.DotNetVersion.Net40) },
     new ReferenceSourceLibraryReferenceAssembly { ReferenceSourceLibrary = sc, ReferenceAssembly = await service.GetReferenceAssemblyByName("System.ServiceProcess.dll", Common.DotNetVersion.Net35) },
     new ReferenceSourceLibraryReferenceAssembly { ReferenceSourceLibrary = sc, ReferenceAssembly = await service.GetReferenceAssemblyByName("System.ServiceProcess.dll", Common.DotNetVersion.Net40) }
+
                 );
             }
             #endregion

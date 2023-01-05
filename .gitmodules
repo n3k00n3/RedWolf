@@ -30,9 +30,3 @@
 	path = RedWolf/Data/ReferenceSourceLibraries/SharpSC
 	url = git@github.com:djhohnstein/SharpSC.git
 	ignore = dirty
-[submodule "RedWolf/Data/ReferenceSourceLibraries/Certify"]
-	path = RedWolf/Data/ReferenceSourceLibraries/Certify
-	url = git@github.com:GhostPack/Certify.git
-[submodule "RedWolf/Data/ReferenceSourceLibraries/SharpBypassUAC"]
-	path = RedWolf/Data/ReferenceSourceLibraries/SharpBypassUAC
-	url = git@github.com:FatRodzianko/SharpBypassUAC.git
