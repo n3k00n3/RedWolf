@@ -1,4 +1,3 @@
-![Covenant](https://raw.githubusercontent.com/wiki/cobbr/Covenant/covenant.png)
 [![Contributors](https://img.shields.io/github/contributors/cobbr/Covenant)](https://github.com/cobbr/Covenant/graphs/contributors)
 [![Commit Activity](https://img.shields.io/github/commit-activity/w/cobbr/covenant)](https://github.com/cobbr/Covenant/graphs/commit-activity)
 [![Stars](https://img.shields.io/github/stars/cobbr/Covenant)](https://github.com/cobbr/Covenant/stargazers)
