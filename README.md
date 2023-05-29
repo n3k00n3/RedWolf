@@ -4,9 +4,9 @@
 [![License](https://img.shields.io/github/license/cobbr/Covenant)](https://github.com/cobbr/Covenant/blob/master/LICENSE)
 [![Chat](https://img.shields.io/badge/chat-%23covenant-red)](https://bloodhoundgang.herokuapp.com/)
 
-Covenant is a .NET command and control framework that aims to highlight the attack surface of .NET, make the use of offensive .NET tradecraft easier, and serve as a collaborative command and control platform for red teamers.
+RedWolf is a .NET command and control framework that aims to highlight the attack surface of .NET, make the use of offensive .NET tradecraft easier, and serve as a collaborative command and control platform for red teamers.
 
-Covenant is an ASP.NET Core, cross-platform application that includes a web-based interface that allows for multi-user collaboration.
+RedWolf is a fork from Covenant that is an ASP.NET Core, cross-platform application that includes a web-based interface that allows for multi-user collaboration.
 
 ![Covenant Dashboard](https://github.com/cobbr/Covenant/wiki/images/covenant-gui-dashboard.png)
 
